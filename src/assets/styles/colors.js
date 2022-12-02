@@ -1,0 +1,5 @@
+export const colorBlack = "#181818"
+export const colorBlackLighter = "#414141"
+export const colorPurpleElectric = "#B82AF5"
+export const colorPurple = "#C55EDE"
+export const colorTurqoiseLight = "#3DE5CC"
