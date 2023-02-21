@@ -16,14 +16,12 @@ import Grid from "@mui/material/Grid";
 import GirlImage from "assets/images/girl.jpg";
 import { colorSmokeWhite } from "assets/styles/colors";
 import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
-import { useNotification } from "helpers/notifications/useNotification.hook";
 import { requestLogin } from "helpers/requests";
 import { useSnackbar } from "notistack";
 
 export const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const { displayNotification } = useNotification();
   const { enqueueSnackbar } = useSnackbar();
 
   const signIn = useCallback(() => {
@@ -35,12 +33,12 @@ export const Login = () => {
         //   type: "success",
         //   message: res.data.message,
         // });
-        enqueueSnackbar('This is a success message!', { variant:"warning" });
+        enqueueSnackbar("This is a success message!", { variant: "error" });
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [password, email, displayNotification]);
+  }, [password, email, enqueueSnackbar]);
 
   const emailChanged = (e) => {
     setEmail(e.target.value);
@@ -121,20 +119,6 @@ export const Login = () => {
                 onClick={signIn}
               >
                 Sign In
-              </Button>
-              <Button
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                onClick={() => {
-                  displayNotification({
-                    open: true,
-                    type: "info",
-                    message: "ciao",
-                  });
-                }}
-              >
-                Ciao
               </Button>
               <Grid container>
                 <Grid item xs>

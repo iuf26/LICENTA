@@ -1,21 +1,18 @@
 import React, { useCallback, useState } from "react";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Avatar, Button, Dialog, TextField, Typography } from "@mui/material";
-import { Alert, AlertTitle } from "@mui/material";
+import { Avatar, Button,TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import GirlImage from "assets/images/girl.jpg";
 import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
 import { requestSignup } from "helpers/requests";
-import { useNotification } from "helpers/notifications/useNotification.hook";
 
 export const Signup = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [confirmation, setConfirmation] = useState();
-  const { displayNotification } = useNotification();
 
   const signUp = useCallback(() => {
     requestSignup({ email, password, confirmation })

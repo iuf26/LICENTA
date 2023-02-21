@@ -2,11 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
-import { Provider } from "react-redux";
-import { Notification } from "components/Notification";
-import { store } from "helpers/redux/store";
-import "semantic-ui-css/semantic.min.css";
 import { SnackbarProvider } from "notistack";
+import "semantic-ui-css/semantic.min.css";
 
 import App from "./App";
 import "./helpers/host.js";
@@ -17,10 +14,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <SnackbarProvider maxSnack={3}>
-         <App />
-      </SnackbarProvider>
-      {/* <Notification/> */}
+        <SnackbarProvider
+          maxSnack={3}
+          style={{ width: "20rem"}}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <App />
+        </SnackbarProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
