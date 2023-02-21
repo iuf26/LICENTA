@@ -1,19 +1,41 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
-import {
-  Avatar,
-  Button,
-  TextField,
-  Typography,
-} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { Avatar, Button, Dialog, TextField, Typography } from "@mui/material";
+import { Alert, AlertTitle } from "@mui/material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import GirlImage from "assets/images/girl.jpg";
 import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { requestSignup } from "helpers/requests";
+import { useNotification } from "helpers/notifications/useNotification.hook";
 
 export const Signup = () => {
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [confirmation, setConfirmation] = useState();
+  const { displayNotification } = useNotification();
+
+  const signUp = useCallback(() => {
+    requestSignup({ email, password, confirmation })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.error({ error: error.response.data });
+      });
+  }, [email, password, confirmation]);
+  const emailChanged = (e) => {
+    setEmail(e.target.value);
+  };
+  const passwordChanged = (e) => {
+    setPassword(e.target.value);
+  };
+  const confirmationChanged = (e) => {
+    setConfirmation(e.target.value);
+  };
+
   return (
     <>
       <StyledBoxLogoContainerLeft />
@@ -46,7 +68,7 @@ export const Signup = () => {
             }}
           >
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
+              <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
               Sign up
@@ -56,9 +78,11 @@ export const Signup = () => {
                 margin="normal"
                 required
                 fullWidth
+                type="email"
                 id="email"
                 label="Email Address"
                 name="email"
+                onChange={emailChanged}
               />
               <TextField
                 margin="normal"
@@ -68,6 +92,7 @@ export const Signup = () => {
                 label="Password"
                 type="password"
                 id="password"
+                onChange={passwordChanged}
               />
               <TextField
                 margin="normal"
@@ -77,12 +102,13 @@ export const Signup = () => {
                 label="Password confirmation"
                 type="password"
                 id="passwordConfirm"
+                onChange={confirmationChanged}
               />
               <Button
-                type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                onClick={signUp}
               >
                 Sign Up
               </Button>

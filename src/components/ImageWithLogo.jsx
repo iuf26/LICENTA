@@ -1,22 +1,14 @@
 import * as React from "react";
 
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import GirlImage from "assets/images/girl.jpg";
 import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
 
 export const ImageWithLogo = () => {
   return (
-    <Grid
-    container
-    width="101rem">
+    <Grid container width="101rem">
       <StyledBoxLogoContainerLeft />
-      <Grid
-        container
-        sx={{ height: "100vh", backgroundColor: "#F4F4F4" }}
-      >
-       
+      <Grid container sx={{ height: "100vh", backgroundColor: "#F4F4F4" }}>
         <Grid
           item
           sm={6}
@@ -31,4 +23,4 @@ export const ImageWithLogo = () => {
       </Grid>
     </Grid>
   );
-}
+};

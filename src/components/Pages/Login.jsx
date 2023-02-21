@@ -1,14 +1,54 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Avatar, Button, TextField, Typography, Checkbox, FormControlLabel,Link } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  TextField,
+  Typography,
+  Checkbox,
+  FormControlLabel,
+  Link,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import GirlImage from "assets/images/girl.jpg";
+import { colorSmokeWhite } from "assets/styles/colors";
 import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
+import { useNotification } from "helpers/notifications/useNotification.hook";
+import { requestLogin } from "helpers/requests";
+import { useSnackbar } from "notistack";
 
 export const Login = () => {
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const { displayNotification } = useNotification();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const signIn = useCallback(() => {
+    requestLogin({ email, password })
+      .then((res) => {
+        console.log({ stat: res.status, data: res.data });
+        // displayNotification({
+        //   open: true,
+        //   type: "success",
+        //   message: res.data.message,
+        // });
+        enqueueSnackbar('This is a success message!', { variant:"warning" });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, [password, email, displayNotification]);
+
+  const emailChanged = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const passwordChanged = (e) => {
+    setPassword(e.target.value);
+  };
 
   return (
     <>
@@ -16,7 +56,7 @@ export const Login = () => {
       <Grid
         container
         component="main"
-        sx={{ height: "100vh", backgroundColor: "#F4F4F4" }}
+        sx={{ height: "100vh", backgroundColor: colorSmokeWhite }}
       >
         <CssBaseline />
         <Grid
@@ -57,6 +97,7 @@ export const Login = () => {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={emailChanged}
               />
               <TextField
                 margin="normal"
@@ -67,18 +108,33 @@ export const Login = () => {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={passwordChanged}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
               <Button
-                type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                onClick={signIn}
               >
                 Sign In
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={() => {
+                  displayNotification({
+                    open: true,
+                    type: "info",
+                    message: "ciao",
+                  });
+                }}
+              >
+                Ciao
               </Button>
               <Grid container>
                 <Grid item xs>
