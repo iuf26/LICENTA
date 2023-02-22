@@ -1,44 +1,57 @@
-import * as React from "react";
+import React, { useCallback, useState } from "react";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Avatar from "@mui/material/Avatar";
+import {
+  Avatar,
+  Button,
+  TextField,
+  Typography,
+  Checkbox,
+  FormControlLabel,
+  Link,
+} from "@mui/material";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
 import CssBaseline from "@mui/material/CssBaseline";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import GirlImage from "assets/images/girl.jpg";
-import Logo from "assets/images/logo-listen-up-transparent.png";
+import { colorSmokeWhite } from "assets/styles/colors";
+import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
+import { mapError, mapResponse } from "helpers/mappings";
+import { requestLogin } from "helpers/requests";
+import { useSnackbar } from "notistack";
 
-export default function SignInSide() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+export const Login = () => {
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const signIn = useCallback(() => {
+    requestLogin({ email, password })
+      .then((res) => mapResponse(res))
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: "success" });
+      })
+      .catch((error) => {
+        error = mapError(error);
+        enqueueSnackbar(error.message, { variant: "error" });
+      });
+  }, [password, email, enqueueSnackbar]);
+
+  const emailChanged = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const passwordChanged = (e) => {
+    setPassword(e.target.value);
   };
 
   return (
     <>
-      <Box
-        sx={{
-          height: "156px",
-          width: "250px",
-          backgroundImage: `url(${Logo})`,
-          backgroundRepeat: "no-repeat",
-          position: "absolute",
-        }}
-      />
+      <StyledBoxLogoContainerLeft />
       <Grid
         container
         component="main"
-        sx={{ height: "100vh", backgroundColor: "#F4F4F4" }}
+        sx={{ height: "100vh", backgroundColor: colorSmokeWhite }}
       >
         <CssBaseline />
         <Grid
@@ -52,11 +65,12 @@ export default function SignInSide() {
             backgroundPosition: "50% 0",
           }}
         />
+
         <Grid item sm={2} md={5}>
           <Box
             sx={{
               my: 8,
-              mx: 4,
+              mx: 10,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -68,12 +82,7 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit}
-              sx={{ mt: 1 }}
-            >
+            <Box component="form" noValidatesx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -83,6 +92,7 @@ export default function SignInSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={emailChanged}
               />
               <TextField
                 margin="normal"
@@ -93,16 +103,17 @@ export default function SignInSide() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={passwordChanged}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
               <Button
-                type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                onClick={signIn}
               >
                 Sign In
               </Button>
@@ -113,7 +124,7 @@ export default function SignInSide() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link href="/signup" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
@@ -124,4 +135,4 @@ export default function SignInSide() {
       </Grid>
     </>
   );
-}
+};
