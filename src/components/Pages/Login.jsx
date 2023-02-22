@@ -16,6 +16,7 @@ import Grid from "@mui/material/Grid";
 import GirlImage from "assets/images/girl.jpg";
 import { colorSmokeWhite } from "assets/styles/colors";
 import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
+import { mapError, mapResponse } from "helpers/mappings";
 import { requestLogin } from "helpers/requests";
 import { useSnackbar } from "notistack";
 
@@ -26,17 +27,13 @@ export const Login = () => {
 
   const signIn = useCallback(() => {
     requestLogin({ email, password })
+      .then((res) => mapResponse(res))
       .then((res) => {
-        console.log({ stat: res.status, data: res.data });
-        // displayNotification({
-        //   open: true,
-        //   type: "success",
-        //   message: res.data.message,
-        // });
-        enqueueSnackbar("This is a success message!", { variant: "error" });
+        enqueueSnackbar(res.message, { variant: "success" });
       })
       .catch((error) => {
-        console.error(error);
+        error = mapError(error);
+        enqueueSnackbar(error.message, { variant: "error" });
       });
   }, [password, email, enqueueSnackbar]);
 

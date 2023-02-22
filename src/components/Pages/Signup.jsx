@@ -1,28 +1,33 @@
 import React, { useCallback, useState } from "react";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Avatar, Button,TextField, Typography } from "@mui/material";
+import { Avatar, Button, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import GirlImage from "assets/images/girl.jpg";
 import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
+import { mapError, mapResponse } from "helpers/mappings";
 import { requestSignup } from "helpers/requests";
+import { useSnackbar } from "notistack";
 
 export const Signup = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [confirmation, setConfirmation] = useState();
+  const { enqueueSnackbar } = useSnackbar();
 
   const signUp = useCallback(() => {
     requestSignup({ email, password, confirmation })
+      .then((res) => mapResponse(res))
       .then((res) => {
-        console.log(res);
+        enqueueSnackbar(res.message, { variant: res.severity });
       })
       .catch((error) => {
-        console.error({ error: error.response.data });
+        error = mapError(error);
+        enqueueSnackbar(error.message, { variant: error.severity });
       });
-  }, [email, password, confirmation]);
+  }, [email, password, confirmation, enqueueSnackbar]);
   const emailChanged = (e) => {
     setEmail(e.target.value);
   };

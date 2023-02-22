@@ -17,7 +17,7 @@ root.render(
         <SnackbarProvider
           maxSnack={3}
           style={{ width: "20rem"}}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         >
           <App />
         </SnackbarProvider>
