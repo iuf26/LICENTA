@@ -17,8 +17,46 @@ import GirlImage from "assets/images/girl.jpg";
 import { colorSmokeWhite } from "assets/styles/colors";
 import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
 import { mapError, mapResponse } from "helpers/mappings";
-import { requestLogin } from "helpers/requests";
+import { requestLogin } from "helpers/account";
 import { useSnackbar } from "notistack";
+
+const StyledGridContainer = (props) => (
+  <Grid
+    container
+    component="main"
+    sx={{ height: "100vh", backgroundColor: colorSmokeWhite }}
+  >
+    {props.children}
+  </Grid>
+);
+
+const StyledGridImageContainer = () => (
+  <Grid
+    item
+    sm={6}
+    md={8}
+    sx={{
+      backgroundImage: `url(${GirlImage})`,
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+      backgroundPosition: "50% 0",
+    }}
+  />
+);
+
+const StyledBoxContainer = (props) => (
+  <Box
+    sx={{
+      my: 8,
+      mx: 5,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    }}
+  >
+    {props.children}
+  </Box>
+);
 
 export const Login = () => {
   const [email, setEmail] = useState();
@@ -48,34 +86,12 @@ export const Login = () => {
   return (
     <>
       <StyledBoxLogoContainerLeft />
-      <Grid
-        container
-        component="main"
-        sx={{ height: "100vh", backgroundColor: colorSmokeWhite }}
-      >
+      <StyledGridContainer>
         <CssBaseline />
-        <Grid
-          item
-          sm={6}
-          md={6.8}
-          sx={{
-            backgroundImage: `url(${GirlImage})`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "50% 0",
-          }}
-        />
+        <StyledGridImageContainer />
 
-        <Grid item sm={2} md={5}>
-          <Box
-            sx={{
-              my: 8,
-              mx: 10,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
+        <Grid item md={4}>
+          <StyledBoxContainer>
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
@@ -119,20 +135,20 @@ export const Login = () => {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  <Link href="/account/reset" variant="body2">
                     Forgot password?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/signup" variant="body2">
+                  <Link href="/account/signup" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
               </Grid>
             </Box>
-          </Box>
+          </StyledBoxContainer>
         </Grid>
-      </Grid>
+      </StyledGridContainer>
     </>
   );
 };

@@ -8,7 +8,7 @@ import Grid from "@mui/material/Grid";
 import GirlImage from "assets/images/girl.jpg";
 import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
 import { mapError, mapResponse } from "helpers/mappings";
-import { requestSignup } from "helpers/requests";
+import { requestSignup } from "helpers/account";
 import { useSnackbar } from "notistack";
 
 export const Signup = () => {
