@@ -13,50 +13,11 @@ import {
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import GirlImage from "assets/images/girl.jpg";
-import { colorSmokeWhite } from "assets/styles/colors";
-import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
+import { StyledBoxLogoContainerLeft } from "assets/styles/styledComponents";
 import { mapError, mapResponse } from "helpers/mappings";
 import { requestLogin } from "helpers/account";
 import { useSnackbar } from "notistack";
-
-const StyledGridContainer = (props) => (
-  <Grid
-    container
-    component="main"
-    sx={{ height: "100vh", backgroundColor: colorSmokeWhite }}
-  >
-    {props.children}
-  </Grid>
-);
-
-const StyledGridImageContainer = () => (
-  <Grid
-    item
-    sm={6}
-    md={8}
-    sx={{
-      backgroundImage: `url(${GirlImage})`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover",
-      backgroundPosition: "50% 0",
-    }}
-  />
-);
-
-const StyledBoxContainer = (props) => (
-  <Box
-    sx={{
-      my: 8,
-      mx: 5,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    }}
-  >
-    {props.children}
-  </Box>
-);
+import {StyledContainerImage, StyledBoxContainer, StyledGridContainer} from "assets/styles/styledComponents";
 
 export const Login = () => {
   const [email, setEmail] = useState();
@@ -88,8 +49,7 @@ export const Login = () => {
       <StyledBoxLogoContainerLeft />
       <StyledGridContainer>
         <CssBaseline />
-        <StyledGridImageContainer />
-
+        <StyledContainerImage/>
         <Grid item md={4}>
           <StyledBoxContainer>
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -120,10 +80,6 @@ export const Login = () => {
                 id="password"
                 autoComplete="current-password"
                 onChange={passwordChanged}
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
               />
               <Button
                 fullWidth

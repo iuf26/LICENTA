@@ -1,17 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams, redirect } from "react-router-dom";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { TextField, Typography, Avatar, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import GirlImage from "assets/images/girl.jpg";
-import { colorSmokeWhite } from "assets/styles/colors";
-import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
+import { StyledBoxLogoContainerLeft } from "assets/styles/styledComponents";
 import { requestPasswordUpdate, requestResetPassword } from "helpers/account";
 import { mapResponse, mapError } from "helpers/mappings";
 import { useSnackbar } from "notistack";
+import {StyledContainerImage, StyledBoxContainer, StyledGridContainer} from "assets/styles/styledComponents";
 
 export const ResetPassword = () => {
   const [email, setEmail] = useState();
@@ -37,7 +36,10 @@ export const ResetPassword = () => {
     const email = searchParams.get("email");
     requestPasswordUpdate({ email, password, confirmation })
       .then((res) => mapResponse(res))
-      .then((res) => enqueueSnackbar(res.message, { variant: res.severity }))
+      .then((res) => {
+        enqueueSnackbar(res.message, { variant: res.severity });
+        setTimeout(() => {console.log("h");redirect("/account/login")}, 3000);
+      })
       .catch((error) => {
         error = mapError(error);
         enqueueSnackbar(error.message, { variant: error.severity });
@@ -49,7 +51,6 @@ export const ResetPassword = () => {
       .then((res) => mapResponse(res))
       .then((res) => {
         enqueueSnackbar(res.message, { variant: res.severity });
-        setTimeout(() => <Navigate to={"/account/login"} />, 3000);
       })
       .catch((error) => {
         error = mapError(error);
@@ -60,34 +61,11 @@ export const ResetPassword = () => {
   return (
     <>
       <StyledBoxLogoContainerLeft />
-      <Grid
-        container
-        component="main"
-        sx={{ height: "100vh", backgroundColor: colorSmokeWhite }}
-      >
+      <StyledGridContainer>
         <CssBaseline />
-        <Grid
-          item
-          sm={6}
-          md={6.8}
-          sx={{
-            backgroundImage: `url(${GirlImage})`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "50% 0",
-          }}
-        />
-
-        <Grid item md={5}>
-          <Box
-            sx={{
-              my: 8,
-              mx: 5,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
+        <StyledContainerImage/>
+        <Grid item md={4}>
+          <StyledBoxContainer>
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
@@ -150,9 +128,9 @@ export const ResetPassword = () => {
                 </>
               )}
             </Box>
-          </Box>
+          </StyledBoxContainer>
         </Grid>
-      </Grid>
+      </StyledGridContainer>
     </>
   );
 };
