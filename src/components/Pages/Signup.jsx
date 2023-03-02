@@ -5,11 +5,11 @@ import { Avatar, Button, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import GirlImage from "assets/images/girl.jpg";
-import { StyledBoxLogoContainerLeft } from "assets/styles/homePage.styles";
+import { StyledBoxLogoContainerLeft } from "assets/styles/styledComponents";
 import { mapError, mapResponse } from "helpers/mappings";
-import { requestSignup } from "helpers/requests";
+import { requestSignup } from "helpers/account";
 import { useSnackbar } from "notistack";
+import {StyledContainerImage, StyledBoxContainer, StyledGridContainer} from "assets/styles/styledComponents";
 
 export const Signup = () => {
   const [email, setEmail] = useState();
@@ -41,34 +41,12 @@ export const Signup = () => {
   return (
     <>
       <StyledBoxLogoContainerLeft />
-      <Grid
-        container
-        component="main"
-        sx={{ height: "100vh", backgroundColor: "#F4F4F4" }}
-      >
+      <StyledGridContainer>
         <CssBaseline />
-        <Grid
-          item
-          sm={6}
-          md={6.8}
-          sx={{
-            backgroundImage: `url(${GirlImage})`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "cover",
-            backgroundPosition: "50% 0",
-          }}
-        />
+        <StyledContainerImage/>
 
-        <Grid item sm={2} md={5}>
-          <Box
-            sx={{
-              my: 8,
-              mx: 10,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
+        <Grid item md={4}>
+          <StyledBoxContainer>
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
@@ -115,9 +93,9 @@ export const Signup = () => {
                 Sign Up
               </Button>
             </Box>
-          </Box>
+          </StyledBoxContainer>
         </Grid>
-      </Grid>
+      </StyledGridContainer>
     </>
   );
 };
