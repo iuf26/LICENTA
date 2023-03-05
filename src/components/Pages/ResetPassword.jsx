@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Navigate, useSearchParams, redirect } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { TextField, Typography, Avatar, Button } from "@mui/material";
@@ -7,18 +8,42 @@ import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import { StyledBoxLogoContainerLeft } from "assets/styles/styledComponents";
-import { requestPasswordUpdate, requestResetPassword } from "helpers/account";
+import {
+  StyledContainerImage,
+  StyledBoxContainer,
+  StyledGridContainer,
+} from "assets/styles/styledComponents";
+import {
+  requestPasswordUpdate,
+  requestResetPassword,
+  requestResetPasswordOtpVerify,
+} from "helpers/account";
 import { mapResponse, mapError } from "helpers/mappings";
 import { useSnackbar } from "notistack";
-import {StyledContainerImage, StyledBoxContainer, StyledGridContainer} from "assets/styles/styledComponents";
 
 export const ResetPassword = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [confirmation, setConfirmation] = useState();
   const [emailVerified, setEmailVerified] = useState();
   const [searchParams, setSearchParams] = useSearchParams();
   const { enqueueSnackbar } = useSnackbar();
+  const { paramEmail, paramOtp } = useParams();
+  const [allowedRouteAcces, setAllouwedRouteAcces] = useState(false);
+
+  useEffect(() => {
+    requestResetPasswordOtpVerify({ email: paramEmail, otp: paramOtp })
+      .then((res) => {
+        if (res.status === 200) {
+          setAllouwedRouteAcces(true);
+        }
+      })
+      .catch((error) => {
+        error = mapError(error);
+        enqueueSnackbar(error.message, { variant: error.severity });
+      });
+  }, [enqueueSnackbar, paramEmail, paramOtp]);
 
   const emailChanged = (e) => {
     setEmail(e.target.value);
@@ -32,25 +57,34 @@ export const ResetPassword = () => {
     setConfirmation(e.target.value);
   };
 
-  const onSaveButtonClick = useCallback(() => {
+  const onResetPasswordButtonClick = useCallback(() => {
     const email = searchParams.get("email");
     requestPasswordUpdate({ email, password, confirmation })
       .then((res) => mapResponse(res))
       .then((res) => {
         enqueueSnackbar(res.message, { variant: res.severity });
-        setTimeout(() => {console.log("h");redirect("/account/login")}, 3000);
+        setTimeout(
+          () =>
+            enqueueSnackbar("You will be redirected to login page...", {
+              variant: "info",
+            }),
+          500
+        );
+        setTimeout(() => {
+          navigate("/account/login");
+        }, 3000);
       })
       .catch((error) => {
         error = mapError(error);
         enqueueSnackbar(error.message, { variant: error.severity });
       });
-  }, [searchParams, confirmation, password, enqueueSnackbar]);
+  }, [searchParams, confirmation, password, enqueueSnackbar, navigate]);
 
-  const onResetPasswordButtonClick = useCallback(() => {
+  const onContinueButtonClick = useCallback(() => {
     requestResetPassword({ email })
       .then((res) => mapResponse(res))
       .then((res) => {
-        enqueueSnackbar(res.message, { variant: res.severity });
+        enqueueSnackbar("Reset password email sent", { variant: res.severity });
       })
       .catch((error) => {
         error = mapError(error);
@@ -63,7 +97,7 @@ export const ResetPassword = () => {
       <StyledBoxLogoContainerLeft />
       <StyledGridContainer>
         <CssBaseline />
-        <StyledContainerImage/>
+        <StyledContainerImage />
         <Grid item md={4}>
           <StyledBoxContainer>
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -73,7 +107,7 @@ export const ResetPassword = () => {
               Reset Password
             </Typography>
             <Box component="form" noValidatesx={{ mt: 1 }}>
-              {searchParams.get("email") ? (
+              {allowedRouteAcces ? (
                 <>
                   <TextField
                     margin="normal"
@@ -99,9 +133,9 @@ export const ResetPassword = () => {
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
-                    onClick={onSaveButtonClick}
+                    onClick={onResetPasswordButtonClick}
                   >
-                    Save
+                    Reset password
                   </Button>
                 </>
               ) : (
@@ -121,9 +155,9 @@ export const ResetPassword = () => {
                     fullWidth
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
-                    onClick={onResetPasswordButtonClick}
+                    onClick={onContinueButtonClick}
                   >
-                    Reset Password
+                    Continue
                   </Button>
                 </>
               )}

@@ -91,7 +91,7 @@ export const Login = () => {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="/account/reset" variant="body2">
+                  <Link href="/account/reset/password" variant="body2">
                     Forgot password?
                   </Link>
                 </Grid>
