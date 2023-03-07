@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import {
@@ -14,10 +14,14 @@ import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
 import { StyledBoxLogoContainerLeft } from "assets/styles/styledComponents";
-import { mapError, mapResponse } from "helpers/mappings";
+import {
+  StyledContainerImage,
+  StyledBoxContainer,
+  StyledGridContainer,
+} from "assets/styles/styledComponents";
 import { requestLogin } from "helpers/account";
+import { mapError, mapResponse } from "helpers/mappings";
 import { useSnackbar } from "notistack";
-import {StyledContainerImage, StyledBoxContainer, StyledGridContainer} from "assets/styles/styledComponents";
 
 export const Login = () => {
   const [email, setEmail] = useState();
@@ -49,7 +53,7 @@ export const Login = () => {
       <StyledBoxLogoContainerLeft />
       <StyledGridContainer>
         <CssBaseline />
-        <StyledContainerImage/>
+        <StyledContainerImage />
         <Grid item md={4}>
           <StyledBoxContainer>
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -91,7 +95,7 @@ export const Login = () => {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="/account/reset" variant="body2">
+                  <Link href="/account/reset/password" variant="body2">
                     Forgot password?
                   </Link>
                 </Grid>
