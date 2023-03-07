@@ -5,6 +5,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
+import { Button } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -22,6 +23,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import Logo from "assets/images/logo-listen-up-transparent.png";
 import { AppBar, Drawer, DrawerHeader } from "assets/styles/styledComponents";
 import { drawerMenuOptions } from "helpers/menuDrawer";
+import { requestLogout } from "helpers/account";
 
 const drawerWidth = 240;
 
@@ -61,6 +63,7 @@ export function MenuDrawer() {
               style={{ width: "8rem", margin: 0 }}
             />
           </Typography>
+          <Button onClick={() => {requestLogout();}}>Log out</Button>
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -98,31 +101,6 @@ export function MenuDrawer() {
             </ListItem>
           ))}
         </List>
-        {/* <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List> */}
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}></Box>
     </Box>
