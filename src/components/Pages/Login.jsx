@@ -33,6 +33,7 @@ export const Login = () => {
       .then((res) => mapResponse(res))
       .then((res) => {
         enqueueSnackbar(res.message, { variant: "success" });
+        //TO DO: save in local storage a boolean value isAuthenticated 
       })
       .catch((error) => {
         error = mapError(error);

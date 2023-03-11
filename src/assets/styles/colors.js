@@ -4,3 +4,4 @@ export const colorPurpleElectric = "#B82AF5"
 export const colorPurple = "#C55EDE"
 export const colorTurqoiseLight = "#3DE5CC"
 export const colorSmokeWhite = "#F4F4F4"
+export const colorSpotifyGreen = "#1DB954";

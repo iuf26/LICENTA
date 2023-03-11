@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 
 import { SnackbarProvider } from "notistack";
 import "semantic-ui-css/semantic.min.css";
+import "assets/styles/style.css";
 
 import App from "./App";
 import "./helpers/host.js";

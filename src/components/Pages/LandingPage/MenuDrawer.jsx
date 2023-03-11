@@ -2,11 +2,6 @@ import * as React from "react";
 
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import MailIcon from "@mui/icons-material/Mail";
-import MenuIcon from "@mui/icons-material/Menu";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import { Button } from "@mui/material";
-import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
@@ -17,58 +12,35 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
-import Logo from "assets/images/logo-listen-up-transparent.png";
-import { AppBar, Drawer, DrawerHeader } from "assets/styles/styledComponents";
+import { Drawer, DrawerHeader } from "assets/styles/styledComponents";
+import { TopBar } from "components/Pages/LandingPage/TopBar";
 import { drawerMenuOptions } from "helpers/menuDrawer";
-import { requestLogout } from "helpers/account";
 
-const drawerWidth = 240;
+const drawerWidth = 210;
 
 export function MenuDrawer() {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} color="secondary">
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            <img
-              src={Logo}
-              alt="Listen up logo"
-              style={{ width: "8rem", margin: 0 }}
-            />
-          </Typography>
-          <Button onClick={() => {requestLogout();}}>Log out</Button>
-        </Toolbar>
-      </AppBar>
-      <Drawer variant="permanent" open={open}>
+      <TopBar />
+      <Drawer
+        variant="permanent"
+        anchor="left"
+        open={true}
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: {
+            width: drawerWidth,
+            boxSizing: "border-box",
+          },
+        }}
+      >
         <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
             ) : (
@@ -83,20 +55,20 @@ export function MenuDrawer() {
               <ListItemButton
                 sx={{
                   minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
+                  justifyContent: "initial",
                   px: 2.5,
                 }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
-                    mr: open ? 3 : "auto",
+                    mr: 3,
                     justifyContent: "center",
                   }}
                 >
                   {icon}
                 </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary={text} sx={{ opacity: 1 }} />
               </ListItemButton>
             </ListItem>
           ))}
