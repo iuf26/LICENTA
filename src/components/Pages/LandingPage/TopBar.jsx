@@ -12,14 +12,15 @@ export const TopBar = () => {
     <AppBar
       position="fixed"
       color="secondary"
-      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, height:'7rem' }}
+    
     >
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between",marginLeft:'-1.5rem' }}>
         <Typography variant="h6" noWrap component="div">
           <img
             src={Logo}
             alt="Listen up logo"
-            style={{ width: "8rem", margin: 0 }}
+            style={{ width: "13rem", margin: 0 }}
           />
         </Typography>
         <div>

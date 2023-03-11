@@ -49,7 +49,7 @@ export function MenuDrawer() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List>
+        <List sx={{marginTop:'3rem'}}>
           {drawerMenuOptions.map(({ text, icon }, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <ListItemButton

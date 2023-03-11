@@ -1,8 +1,9 @@
 import * as React from "react";
 
+import { Icon } from "@iconify/react";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Logout from "@mui/icons-material/Logout";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
@@ -15,9 +16,11 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
+import { colorSpotifyGreen } from "assets/styles/colors";
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  //const [signedInUsername, setSignedInUsername] 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -33,17 +36,33 @@ export default function AccountMenu() {
           alignItems: "center",
           cursor: "pointer",
           backgroundColor: "#2E2B2B",
-          borderRadius: "20px"
+          borderRadius: "20px",
         }}
       >
         <Tooltip title="Account settings">
           <Box
-            sx={{ display: "inline-flex", gap: "0.2rem",marginTop:'0.3rem',height:'2.5rem' }}
+            sx={{
+              display: "inline-flex",
+              gap: "0.2rem",
+              marginTop: "0.3rem",
+              height: "2.5rem",
+            }}
             onClick={handleClick}
           >
-            <AccountCircleIcon sx={{ ml: 2, width: 32, height: 32,margin:0,padding:'0.2rem' }} />
-            <p style={{ marginTop: "5px"}}>iresrseeegsgegs@gmail.com</p>
-            <ArrowDropDownIcon sx={{ ml: 2, width: 25, height: 25,margin:0,marginTop:'3px' }}/>
+            <AccountCircleIcon
+              sx={{
+                ml: 2,
+                width: 32,
+                height: 32,
+                margin: 0,
+                padding: "0.2rem",
+              }}
+            />
+            <p style={{ marginTop: "5px" }}>iresrseeegsgegs@gmail.com</p> 
+            {/* TO DO: add  with redux logged in user  */}
+            <ArrowDropDownIcon
+              sx={{ ml: 2, width: 25, height: 25, margin: 0, marginTop: "3px" }}
+            />
           </Box>
         </Tooltip>
       </Box>
@@ -82,28 +101,21 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar /> My account
+        <MenuItem onClick={handleClose} sx={{ margin: 0 }}>
+          <ListItemIcon>
+            <Icon
+              icon="mdi:spotify"
+              width="1.90rem"
+              height="1.90rem"
+              color={colorSpotifyGreen}
+            />
+          </ListItemIcon>
+          Add Spotify
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <Logout fontSize="small" />
+            <Logout sx={{ width: "1.70rem", height: "1.70rem" }} />
           </ListItemIcon>
           Logout
         </MenuItem>
