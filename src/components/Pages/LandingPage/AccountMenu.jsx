@@ -1,4 +1,7 @@
 import * as React from "react";
+import { useCallback } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { Icon } from "@iconify/react";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -17,17 +20,44 @@ import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { colorSpotifyGreen } from "assets/styles/colors";
+import { requestLogout } from "helpers/account";
+import { mapResponse } from "helpers/mappings";
+import { requestSpotifyLogin } from "helpers/streaming";
+import { useSnackbar } from "notistack";
+import { useAccount } from "redux/hooks/useAccount";
+import { selectUsername } from "redux/selectors/accountSelector";
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  //const [signedInUsername, setSignedInUsername] 
+  const { logout } = useAccount();
+  const { enqueueSnackbar } = useSnackbar();
+  const username = useSelector(selectUsername);
   const open = Boolean(anchorEl);
+
+  const onLogoutClick = () => {
+    logout();
+    requestLogout();
+  };
+
+  const onAddSpotifyClick = () => {
+    requestSpotifyLogin(username)
+      .then((res) => mapResponse(res))
+      .then((res) => {
+        window.location.replace(res.body.redirectLink);
+      })
+      .catch((error) => {
+        enqueueSnackbar(error, { variant: "error" });
+      });
+  };
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   return (
     <React.Fragment>
       <Box
@@ -58,7 +88,7 @@ export default function AccountMenu() {
                 padding: "0.2rem",
               }}
             />
-            <p style={{ marginTop: "5px" }}>iresrseeegsgegs@gmail.com</p> 
+            <p style={{ marginTop: "5px" }}>{username}</p>
             {/* TO DO: add  with redux logged in user  */}
             <ArrowDropDownIcon
               sx={{ ml: 2, width: 25, height: 25, margin: 0, marginTop: "3px" }}
@@ -101,7 +131,7 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleClose} sx={{ margin: 0 }}>
+        <MenuItem onClick={onAddSpotifyClick} sx={{ margin: 0 }}>
           <ListItemIcon>
             <Icon
               icon="mdi:spotify"
@@ -113,7 +143,7 @@ export default function AccountMenu() {
           Add Spotify
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={onLogoutClick}>
           <ListItemIcon>
             <Logout sx={{ width: "1.70rem", height: "1.70rem" }} />
           </ListItemIcon>

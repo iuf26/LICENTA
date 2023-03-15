@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import {
@@ -22,24 +23,29 @@ import {
 import { requestLogin } from "helpers/account";
 import { mapError, mapResponse } from "helpers/mappings";
 import { useSnackbar } from "notistack";
+import { useAccount } from "redux/hooks/useAccount";
 
 export const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const { enqueueSnackbar } = useSnackbar();
+  const { login } = useAccount();
 
   const signIn = useCallback(() => {
     requestLogin({ email, password })
       .then((res) => mapResponse(res))
       .then((res) => {
         enqueueSnackbar(res.message, { variant: "success" });
-        //TO DO: save in local storage a boolean value isAuthenticated 
+        //TO DO: save in local storage a boolean value isAuthenticated
+        login(email);
+        navigate("/home");
       })
       .catch((error) => {
         error = mapError(error);
         enqueueSnackbar(error.message, { variant: "error" });
       });
-  }, [password, email, enqueueSnackbar]);
+  }, [password, email, enqueueSnackbar, navigate, login]);
 
   const emailChanged = (e) => {
     setEmail(e.target.value);
