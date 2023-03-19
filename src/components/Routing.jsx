@@ -9,7 +9,8 @@ import { PasswordForm } from "components/Pages/ResetPassword/PasswordForm";
 import { Signup } from "components/Pages/Signup";
 import { selectIsAuthenticated } from "redux/selectors/accountSelector";
 
-import { ProtectedRoute } from "./ProtectedRoute";
+import { ProtectedRoute } from "components/ProtectedRoute";
+import { Recorder } from "components/RecordingFunctionality/components/Recorder";
 
 const Routing = () => {
   const isAuth = useSelector(selectIsAuthenticated);
@@ -24,6 +25,11 @@ const Routing = () => {
           exact
           path="/account/reset/password/:email/:otp"
           element={<PasswordForm />}
+        />
+        <Route
+          exact
+          path="/ser-detection"
+          element={<Recorder />}
         />
 
         {/* Protected routes here */}

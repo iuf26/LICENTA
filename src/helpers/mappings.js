@@ -16,3 +16,9 @@ export const mapError = (error) => {
     severity:error.response.data.severity
    }
   };
+
+  //recommentations.tracks - lista
+  // pentru accesarea unui link extern al unei melodii recomandate: recommentations.tracks[0].external_urls.spotify
+const mapSpotifyRecommendations = (body) => {
+
+}
