@@ -7,10 +7,11 @@ import { Login } from "components/Pages/Login";
 import { EmailCheck } from "components/Pages/ResetPassword/EmailCheck";
 import { PasswordForm } from "components/Pages/ResetPassword/PasswordForm";
 import { Signup } from "components/Pages/Signup";
-import { selectIsAuthenticated } from "redux/selectors/accountSelector";
-
 import { ProtectedRoute } from "components/ProtectedRoute";
 import { Recorder } from "components/RecordingFunctionality/components/Recorder";
+import { selectIsAuthenticated } from "redux/selectors/accountSelector";
+
+import { DjPage } from "./Pages/LandingPage/DjPage";
 
 const Routing = () => {
   const isAuth = useSelector(selectIsAuthenticated);
@@ -26,11 +27,7 @@ const Routing = () => {
           path="/account/reset/password/:email/:otp"
           element={<PasswordForm />}
         />
-        <Route
-          exact
-          path="/ser-detection"
-          element={<Recorder />}
-        />
+        <Route exact path="/dj" element={<DjPage />} />
 
         {/* Protected routes here */}
 

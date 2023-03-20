@@ -4,12 +4,15 @@ export function deleteAudio(audioKey, setRecordings) {
   );
 }
 
-export const predictEmotion = (file,setIsFinished,setIsLoading,setPrediction) => {
+export const predictEmotion = (
+  file,
+  setIsFinished,
+  setIsLoading,
+  setPrediction
+) => {
   const formData = new FormData();
-  const MODEL_URL = "https://18.192.42.57:8081";
-  const LOCAL_URL = "http://localhost:8081";
   formData.append("recording", file);
-  fetch(LOCAL_URL, {
+  fetch(process.env.REACT_APP_SER_URI, {
     method: "POST",
     body: formData,
   })
@@ -17,7 +20,7 @@ export const predictEmotion = (file,setIsFinished,setIsLoading,setPrediction) =>
     .then((response) => {
       setIsFinished(true);
       setIsLoading(false);
-      setPrediction(response)
+      setPrediction(response);
     })
     .catch((error) => console.error(error));
 };

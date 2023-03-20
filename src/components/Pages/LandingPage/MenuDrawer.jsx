@@ -12,11 +12,17 @@ import ListItemText from "@mui/material/ListItemText";
 import { useTheme } from "@mui/material/styles";
 import { Drawer, DrawerHeader } from "assets/styles/styledComponents";
 import { drawerMenuOptions } from "helpers/menuDrawer";
+import { useNavigate } from "react-router";
 
 const drawerWidth = 210;
 
 export function MenuDrawer() {
   const theme = useTheme();
+  const navigate = useNavigate();
+
+  const onMenuOptionClicked = (destination) => {
+    navigate(destination);
+  }
 
   return (
     <Drawer
@@ -24,6 +30,7 @@ export function MenuDrawer() {
       anchor="left"
       open={true}
       sx={{
+        bgcolor:'red',
         width: drawerWidth,
         flexShrink: 0,
         [`& .MuiDrawer-paper`]: {
@@ -43,8 +50,8 @@ export function MenuDrawer() {
       </DrawerHeader>
       <Divider />
       <List sx={{ marginTop: "3rem" }}>
-        {drawerMenuOptions.map(({ text, icon }, index) => (
-          <ListItem key={text} disablePadding sx={{ display: "block" }}>
+        {drawerMenuOptions.map(({ text, icon, route }, index) => (
+          <ListItem key={text} disablePadding sx={{ display: "block" }} onClick={() => onMenuOptionClicked(route)}>
             <ListItemButton
               sx={{
                 minHeight: 48,
