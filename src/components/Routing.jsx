@@ -27,7 +27,6 @@ const Routing = () => {
           path="/account/reset/password/:email/:otp"
           element={<PasswordForm />}
         />
-        <Route exact path="/dj" element={<DjPage />} />
 
         {/* Protected routes here */}
 
@@ -41,6 +40,15 @@ const Routing = () => {
           }
         />
 
+        <Route
+          exact
+          path="/dj"
+          element={
+            <ProtectedRoute isLoggedIn={isAuth}>
+              <DjPage />
+            </ProtectedRoute>
+          }
+        />
         <Route exact path="*" element={<Navigate to="/account/login" />} />
       </Routes>
     </>

@@ -10,10 +10,11 @@ export const requestSpotifyLogin = (username) => {
 };
 
 export const requestSpotifyGeneratedPlaylist = (
-  username,
+  {username,
   detectedEmotion,
   loudness,
   tempo
+  }
 ) => {
   const body = {
     detectedEmotion,

@@ -16,6 +16,7 @@ import { TopBar } from "components/Pages/LandingPage/TopBar";
 import { Recorder } from "components/RecordingFunctionality/components/Recorder";
 import useRecordingsList from "components/RecordingFunctionality/hooks/use-recordings-list";
 import useRecorder from "components/RecordingFunctionality/hooks/useRecorder";
+import { requestSpotifyGeneratedPlaylist } from "helpers/streaming";
 import { useSnackbar } from "notistack";
 import { selectUsername } from "redux/selectors/accountSelector";
 import { Button } from "semantic-ui-react";
@@ -60,13 +61,12 @@ export const DjPage = () => {
     predictEmotion,
   ]);
 
-  // useEffect(() => {
-  //   if (prediction) {
-  //     enqueueSnackbar(`DJ predicted you are ${prediction.detectedEmotion}`, {
-  //       variant: "success",
-  //     });
-  //   }
-  // }, [prediction, enqueueSnackbar]);
+  const onGeneratePlaylistClick = useCallback(() => {
+    console.log({ prediction });
+    requestSpotifyGeneratedPlaylist(prediction)
+      .then((resp) => console.log(resp))
+      .catch((error) => console.log(error));
+  }, [prediction]);
 
   return (
     <>
@@ -136,7 +136,15 @@ export const DjPage = () => {
                 style={{ transformOrigin: "2 2 2" }}
                 {...(true ? { timeout: 2000 } : {})}
               >
-                {icon}
+                <Fab
+                  size="large"
+                  variant="extended"
+                  sx={{ backgroundColor: "#1DB954" }}
+                  onClick={onGeneratePlaylistClick}
+                >
+                  <AudiotrackIcon sx={{ mr: 1 }} />
+                  Generate playlist
+                </Fab>
               </Grow>
             </Box>
           ) : null}
