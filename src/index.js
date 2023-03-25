@@ -1,8 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
+import "assets/styles/style.css";
+import { AppContextProvider } from "components/AppContext";
 import { SnackbarProvider } from "notistack";
+import { store } from "redux/store";
 import "semantic-ui-css/semantic.min.css";
 
 import App from "./App";
@@ -15,11 +19,13 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <SnackbarProvider
-        maxSnack={3}
+        maxSnack={1}
         style={{ width: "20rem" }}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
-        <App />
+        <Provider store={store}>
+          <App />
+        </Provider>
       </SnackbarProvider>
     </BrowserRouter>
   </React.StrictMode>
