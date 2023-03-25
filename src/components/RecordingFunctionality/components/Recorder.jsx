@@ -4,6 +4,8 @@ import HeadsetIcon from "@mui/icons-material/Headset";
 import { Box } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import Fab from "@mui/material/Fab";
+import Typography from "@mui/material/Typography";
+import { colorPurpleElectric, colorPurplePowder } from "assets/styles/colors";
 import RecorderControls from "components/RecordingFunctionality/components/recorder-controls";
 import RecordingsList from "components/RecordingFunctionality/components/recordings-list";
 import useRecorder from "components/RecordingFunctionality/hooks/useRecorder";
@@ -11,46 +13,66 @@ import {
   formatMinutes,
   formatSeconds,
 } from "components/RecordingFunctionality/utils/format-time";
+import { useSnackbar } from "notistack";
 import "semantic-ui-css/semantic.min.css";
 
-export const Recorder = ({ handlers, recorderState, predictionLoading }) => {
+export const Recorder = ({
+  handlers,
+  recorderState,
+  predictionLoading,
+  setShowPredictEmotionButton,
+  setPredictionFinished,
+}) => {
   const [pulse, setPulse] = useState(false);
   const [recordingState, setRecordingState] = useState("stop");
   const { recordingMinutes, recordingSeconds } = recorderState;
   const { startRecording, saveRecording } = handlers;
+  const { enqueueSnackbar } = useSnackbar();
 
   const buttonSx = {
     bgcolor: "linear-gradient(to right, #41295a, #2f0743);",
     width: "10rem",
     height: "10rem",
+    boxShadow: `0px 0px 5px 0px #3A373B`,
   };
   const handleListenButtonClick = useCallback(() => {
     setPulse((prev) => !prev);
     if (recordingState === "stop") {
       startRecording();
+      setPredictionFinished(false);
+      setShowPredictEmotionButton(false);
     } else {
+      enqueueSnackbar("Your recording was saved", { variant: "info" });
       saveRecording();
+      setShowPredictEmotionButton(true);
     }
     setRecordingState((prev) => (prev === "start" ? "stop" : "start"));
-  }, [setPulse, startRecording, recordingState, saveRecording]);
+  }, [
+    setPulse,
+    startRecording,
+    recordingState,
+    saveRecording,
+    enqueueSnackbar,
+    setShowPredictEmotionButton,
+    setPredictionFinished,
+  ]);
 
   return (
     <Box
       display="flex"
       width="100%"
-      height="50rem"
+      height="15rem"
       alignItems="center"
       justifyContent="center"
       flexDirection="column"
       gap={3}
+      margin={0}
+      marginTop="10rem"
+      padding={0}
     >
-      {recordingState === "start" && (
-        <div className="recording-time">
-          <span>{formatMinutes(recordingMinutes)}</span>
-          <span>:</span>
-          <span>{formatSeconds(recordingSeconds)}</span>
-        </div>
-      )}
+      <Typography variant="h4">
+        Hi! I'm <strong style={{ color: colorPurplePowder }}>DJ!</strong>
+      </Typography>
       <Fab
         aria-label="save"
         sx={buttonSx}
@@ -65,9 +87,9 @@ export const Recorder = ({ handlers, recorderState, predictionLoading }) => {
         <CircularProgress
           size={168}
           sx={{
-            color: "#B82AF5", //#E09AF1
+            color: colorPurplePowder, //#E09AF1
             position: "absolute",
-            top: "20.8rem",
+            top: "17.6rem",
             marginTop: 0,
             marginLeft: "0",
           }}

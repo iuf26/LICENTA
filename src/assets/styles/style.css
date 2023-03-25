@@ -12,23 +12,25 @@
         position: absolute;
         height: 11rem;
         width:11rem;
-        background-color: #8530d1 ;
+        background-color: #CA83DC ;
         border-radius: 50%;
         z-index: -2;
         opacity: 0.8;
         animation: pulse 2s ease-in infinite;
+        box-shadow:0px 0px 15px 0px #B82AF5;
  }
 
  .pulse:after{
         content:"";
         position: absolute;
-        height: 13.5rem;
-        width:13.5rem;
-        background-color: #8530d1;
+        height: 12.5rem;
+        width:12.5rem;
+        background-color: #ab6dbb;
         border-radius: 50%;
         z-index: -1;
         opacity: 0.8;
         animation: pulse 2s 0.7s ease-in infinite;
+        box-shadow:0px 0px 20px 0px #c233ff;
  }
 
  @keyframes pulse{

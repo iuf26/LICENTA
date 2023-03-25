@@ -11,7 +11,7 @@ import { ProtectedRoute } from "components/ProtectedRoute";
 import { Recorder } from "components/RecordingFunctionality/components/Recorder";
 import { selectIsAuthenticated } from "redux/selectors/accountSelector";
 
-import { DjPage } from "./Pages/LandingPage/DjPage";
+import { DjPage } from "./Pages/DJ/DjPage";
 
 const Routing = () => {
   const isAuth = useSelector(selectIsAuthenticated);
