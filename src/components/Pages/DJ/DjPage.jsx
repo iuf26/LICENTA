@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -16,12 +16,15 @@ import { TopBar } from "components/Pages/LandingPage/TopBar";
 import { Recorder } from "components/RecordingFunctionality/components/Recorder";
 import useRecordingsList from "components/RecordingFunctionality/hooks/use-recordings-list";
 import useRecorder from "components/RecordingFunctionality/hooks/useRecorder";
+import { mapSpotifyRecommendationsTracks } from "helpers/mappings";
 import { requestSpotifyGeneratedPlaylist } from "helpers/streaming";
 import { useSnackbar } from "notistack";
 import { selectUsername } from "redux/selectors/accountSelector";
+import { PlaylistRecommendActions } from "redux/slices/playlistRecommendSlice";
 import { Button } from "semantic-ui-react";
 
 import { MenuDrawer } from "../LandingPage/MenuDrawer";
+import { TracksList } from "../Tracks/TracksList";
 import DjInfoDialog from "./DjInfoDialog";
 import { PredictEmotionFabButton } from "./PredictEmotionFabButton";
 import { PredictedEmotionDialog } from "./PredictedEmotionDialog";
@@ -40,6 +43,8 @@ export const DjPage = () => {
   const emotionText = (
     <Typography variant="h4">DJ predicted you are emotion</Typography>
   );
+  const dispatch = useDispatch();
+  const username = useSelector(selectUsername);
   const [prediction, setPrediction] = useState();
   const [loading, setLoading] = useState(false);
   const [showPredictEmotionButton, setShowPredictEmotionButton] =
@@ -48,7 +53,6 @@ export const DjPage = () => {
   const { recorderState, addRecording, ...handlers } = useRecorder();
   const { audio } = recorderState;
   const { recordings, deleteAudio, predictEmotion } = useRecordingsList(audio);
-  const username = useSelector(selectUsername);
   const { enqueueSnackbar } = useSnackbar();
 
   const onPredict = useCallback(() => {
@@ -64,16 +68,19 @@ export const DjPage = () => {
   const onGeneratePlaylistClick = useCallback(() => {
     console.log({ prediction });
     requestSpotifyGeneratedPlaylist(prediction)
-      .then((resp) => console.log(resp))
+      .then((prediction) => mapSpotifyRecommendationsTracks(prediction).tracks)
+      .then((tracks) => {
+        console.log(tracks);
+        dispatch(PlaylistRecommendActions.setTracks(tracks));
+      })
       .catch((error) => console.log(error));
-  }, [prediction]);
+  }, [prediction, dispatch]);
 
   return (
     <>
       <Box
         sx={{
           display: "flex",
-
           padding: 0,
           margin: 0,
         }}
@@ -149,6 +156,7 @@ export const DjPage = () => {
             </Box>
           ) : null}
         </Box>
+        <TracksList />
       </Box>
     </>
   );
