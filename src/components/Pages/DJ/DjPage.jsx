@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { CssBaseline } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import Fab from "@mui/material/Fab";
 import Grow from "@mui/material/Grow";
 import Paper from "@mui/material/Paper";
@@ -50,6 +51,8 @@ export const DjPage = () => {
   const [showPredictEmotionButton, setShowPredictEmotionButton] =
     useState(false);
   const [predictionFinished, setPredictionFinished] = useState(false);
+  const [generatePlaylistLoading, setGeneratePlaylistLoading] = useState(false);
+  const [playlistRetrieved, setPlaylistRetrieved] = useState(false);
   const { recorderState, addRecording, ...handlers } = useRecorder();
   const { audio } = recorderState;
   const { recordings, deleteAudio, predictEmotion } = useRecordingsList(audio);
@@ -66,18 +69,27 @@ export const DjPage = () => {
   ]);
 
   const onGeneratePlaylistClick = useCallback(() => {
-    console.log({ prediction });
+    setGeneratePlaylistLoading(true);
+    // setPlaylistRetrieved(false);
     requestSpotifyGeneratedPlaylist(prediction)
       .then((prediction) => mapSpotifyRecommendationsTracks(prediction).tracks)
       .then((tracks) => {
-        console.log(tracks);
         dispatch(PlaylistRecommendActions.setTracks(tracks));
+        setGeneratePlaylistLoading(false);
+        setPlaylistRetrieved(true);
       })
       .catch((error) => console.log(error));
   }, [prediction, dispatch]);
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        padding: 0,
+        margin: 0,
+      }}
+      flexDirection="column"
+    >
       <Box
         sx={{
           display: "flex",
@@ -107,6 +119,7 @@ export const DjPage = () => {
             predictionLoading={loading}
             setShowPredictEmotionButton={setShowPredictEmotionButton}
             setPredictionFinished={setPredictionFinished}
+            setPlaylistRetrieved={setPlaylistRetrieved}
           />
           {showPredictEmotionButton && !predictionFinished && (
             <PredictEmotionFabButton onClick={onPredict} />
@@ -143,21 +156,33 @@ export const DjPage = () => {
                 style={{ transformOrigin: "2 2 2" }}
                 {...(true ? { timeout: 2000 } : {})}
               >
-                <Fab
-                  size="large"
-                  variant="extended"
-                  sx={{ backgroundColor: "#1DB954" }}
-                  onClick={onGeneratePlaylistClick}
-                >
-                  <AudiotrackIcon sx={{ mr: 1 }} />
-                  Generate playlist
-                </Fab>
+                {generatePlaylistLoading ? (
+                  <CircularProgress color="secondary" />
+                ) : (
+                  <Fab
+                    size="large"
+                    variant="extended"
+                    sx={{ backgroundColor: "#1DB954" }}
+                    onClick={onGeneratePlaylistClick}
+                  >
+                    <AudiotrackIcon sx={{ mr: 1 }} />
+                    Generate playlist
+                  </Fab>
+                )}
               </Grow>
             </Box>
           ) : null}
         </Box>
-        <TracksList />
+        {/* <Grow
+          in={false}
+          style={{ transformOrigin: "2 2 2" }}
+          {...(true ? { timeout: 1000 } : {})}
+        >
+          <TracksList />
+        </Grow> */}
+        {/* <TracksList /> */}
       </Box>
-    </>
+      {playlistRetrieved && <TracksList />}
+    </Box>
   );
 };

@@ -22,6 +22,7 @@ export const Recorder = ({
   predictionLoading,
   setShowPredictEmotionButton,
   setPredictionFinished,
+  setPlaylistRetrieved,
 }) => {
   const [pulse, setPulse] = useState(false);
   const [recordingState, setRecordingState] = useState("stop");
@@ -39,6 +40,7 @@ export const Recorder = ({
     setPulse((prev) => !prev);
     if (recordingState === "stop") {
       startRecording();
+      setPlaylistRetrieved(false);
       setPredictionFinished(false);
       setShowPredictEmotionButton(false);
     } else {
@@ -55,6 +57,7 @@ export const Recorder = ({
     enqueueSnackbar,
     setShowPredictEmotionButton,
     setPredictionFinished,
+    setPlaylistRetrieved,
   ]);
 
   return (

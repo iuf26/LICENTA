@@ -34,7 +34,6 @@ export const mapPredictionEmotion = (prediction) => {
 //recommentations.tracks - lista
 // pentru accesarea unui link extern al unei melodii recomandate: recommentations.tracks[0].external_urls.spotify
 export const mapSpotifyRecommendationsTracks = (resp) => {
-  console.log({ resp });
   return {
     tracks: resp.data.body.recommendation.body.tracks,
   };
@@ -51,5 +50,6 @@ export const mapSpotifyTrack = (track) => {
     artistId: track.artists[0].id,
     artists: track.artists,
     albumImages: track.album.images,
+    trackUri: track.uri,
   };
 };
