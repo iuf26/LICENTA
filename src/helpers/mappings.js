@@ -36,6 +36,7 @@ export const mapPredictionEmotion = (prediction) => {
 export const mapSpotifyRecommendationsTracks = (resp) => {
   return {
     tracks: resp.data.body.recommendation.body.tracks,
+    seedArtists: resp.data.body.artistsFound,
   };
 };
 
@@ -51,5 +52,13 @@ export const mapSpotifyTrack = (track) => {
     artists: track.artists,
     albumImages: track.album.images,
     trackUri: track.uri,
+  };
+};
+
+export const mapSpeech2TextTranscription = (resp) => {
+  console.log({ resp });
+  return {
+    text: resp.data?.utterances[0]?.text,
+    words: resp.data?.utterances[0]?.words,
   };
 };

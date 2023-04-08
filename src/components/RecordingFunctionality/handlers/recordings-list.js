@@ -30,8 +30,8 @@ export function predictEmotion(
     .then((response) => {
       const prediction = mappingGeneratePlaylistRequest(response, username);
       setPrediction({ ...prediction });
-      setIsFinished(true);
-      setIsLoading(false);
+      // setIsFinished(true);
+      // setIsLoading(false);
     })
     .catch((error) => console.error(error));
 }

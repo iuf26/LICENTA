@@ -18,11 +18,13 @@ export const requestSpotifyGeneratedPlaylist = ({
   detectedEmotion,
   loudness,
   tempo,
-}) => {
+},{text,words}) => {
   const body = {
     detectedEmotion,
     loudness,
     tempo,
+    text,
+    words
   };
   return axios.post(`${SPOTIFY_GENERATE_PLAYLIST_REQUEST}/${username}`, body, {
     withCredentials: true,

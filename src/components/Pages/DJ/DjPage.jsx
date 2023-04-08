@@ -17,8 +17,12 @@ import { TopBar } from "components/Pages/LandingPage/TopBar";
 import { Recorder } from "components/RecordingFunctionality/components/Recorder";
 import useRecordingsList from "components/RecordingFunctionality/hooks/use-recordings-list";
 import useRecorder from "components/RecordingFunctionality/hooks/useRecorder";
-import { mapSpotifyRecommendationsTracks } from "helpers/mappings";
+import {
+  mapSpeech2TextTranscription,
+  mapSpotifyRecommendationsTracks,
+} from "helpers/mappings";
 import { requestSpotifyGeneratedPlaylist } from "helpers/streaming";
+import { requestSpeechToTextTranscription } from "helpers/voiceCommands";
 import { useSnackbar } from "notistack";
 import { selectUsername } from "redux/selectors/accountSelector";
 import { PlaylistRecommendActions } from "redux/slices/playlistRecommendSlice";
@@ -35,15 +39,6 @@ const StyledDiv = styled("div")(({ theme }) => ({
   padding: theme.spacing(1),
 }));
 export const DjPage = () => {
-  const icon = (
-    <Fab size="large" variant="extended" sx={{ backgroundColor: "#1DB954" }}>
-      <AudiotrackIcon sx={{ mr: 1 }} />
-      Generate playlist
-    </Fab>
-  );
-  const emotionText = (
-    <Typography variant="h4">DJ predicted you are emotion</Typography>
-  );
   const dispatch = useDispatch();
   const username = useSelector(selectUsername);
   const [prediction, setPrediction] = useState();
@@ -57,29 +52,55 @@ export const DjPage = () => {
   const { audio } = recorderState;
   const { recordings, deleteAudio, predictEmotion } = useRecordingsList(audio);
   const { enqueueSnackbar } = useSnackbar();
+  const [seedArtists, setSeedArtists] = useState();
+  const [transcription, setTranscription] = useState();
+
+  const voiceAnalyzed = () => {
+    setLoading(false);
+    setPredictionFinished(true);
+  };
+
+  const transcribeVoiceToText = useCallback(({ audio }) => {
+    console.log({ audio });
+    requestSpeechToTextTranscription({ recording: audio })
+      .then((resp) => mapSpeech2TextTranscription(resp))
+      .then((resp) => {
+        console.log({ resp });
+        setTranscription(resp);
+        voiceAnalyzed();
+      })
+      .catch((err) => {
+        console.log(err);
+        voiceAnalyzed();
+      });
+  }, []);
 
   const onPredict = useCallback(() => {
     predictEmotion(setPredictionFinished, setLoading, setPrediction, username);
+    transcribeVoiceToText({ audio });
   }, [
-    setPredictionFinished,
+    audio,
+    username,
     setLoading,
     setPrediction,
-    username,
     predictEmotion,
+    setPredictionFinished,
+    transcribeVoiceToText,
   ]);
 
   const onGeneratePlaylistClick = useCallback(() => {
     setGeneratePlaylistLoading(true);
     // setPlaylistRetrieved(false);
-    requestSpotifyGeneratedPlaylist(prediction)
-      .then((prediction) => mapSpotifyRecommendationsTracks(prediction).tracks)
-      .then((tracks) => {
+    requestSpotifyGeneratedPlaylist(prediction, transcription)
+      .then((prediction) => mapSpotifyRecommendationsTracks(prediction))
+      .then(({ tracks, seedArtists }) => {
         dispatch(PlaylistRecommendActions.setTracks(tracks));
         setGeneratePlaylistLoading(false);
         setPlaylistRetrieved(true);
+        setSeedArtists(seedArtists);
       })
       .catch((error) => console.log(error));
-  }, [prediction, dispatch]);
+  }, [prediction, dispatch, transcription]);
 
   return (
     <Box
@@ -121,7 +142,7 @@ export const DjPage = () => {
             setPredictionFinished={setPredictionFinished}
             setPlaylistRetrieved={setPlaylistRetrieved}
           />
-          {showPredictEmotionButton && !predictionFinished && (
+          {showPredictEmotionButton && !predictionFinished && !loading && (
             <PredictEmotionFabButton onClick={onPredict} />
           )}
           {predictionFinished && prediction.detectedEmotion ? (
@@ -170,6 +191,23 @@ export const DjPage = () => {
                   </Fab>
                 )}
               </Grow>
+              <br></br>
+              {playlistRetrieved && !generatePlaylistLoading && (
+                <Grow
+                  in={true}
+                  style={{ transformOrigin: "2 2 2" }}
+                  {...(true ? { timeout: 1000 } : {})}
+                >
+                  {
+                    <Typography variant="h5">
+                      I created your playlist starting from detected artists{" "}
+                      <strong style={{ color: colorPurplePowder }}>
+                        {seedArtists}
+                      </strong>
+                    </Typography>
+                  }
+                </Grow>
+              )}
             </Box>
           ) : null}
         </Box>
