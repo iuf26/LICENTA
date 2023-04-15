@@ -200,10 +200,19 @@ export const DjPage = () => {
                 >
                   {
                     <Typography variant="h5">
-                      I created your playlist starting from detected artists{" "}
-                      <strong style={{ color: colorPurplePowder }}>
-                        {seedArtists}
-                      </strong>
+                      {seedArtists.length === 0 ? (
+                        <p>
+                          No artists were detected, but we picked your favourite
+                          ones
+                        </p>
+                      ) : (
+                        <>
+                          I created your playlist starting from detected artists{" "}
+                          <strong style={{ color: colorPurplePowder }}>
+                            {seedArtists}
+                          </strong>
+                        </>
+                      )}
                     </Typography>
                   }
                 </Grow>
