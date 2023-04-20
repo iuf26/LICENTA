@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { Card, CssBaseline, Fab, Typography } from "@mui/material";
 import { CardActionArea } from "@mui/material";
 import CardContent from "@mui/material/CardContent";
@@ -25,15 +26,16 @@ export const Home = () => {
             flexDirection: "column",
             gap: "1rem",
             marginTop: "7rem",
+            justifyContent: "center",
           }}
         >
           <Typography variant="h3" marginTop="7rem">
             Welcome to our community!
           </Typography>
           <Box style={{ display: "flex", gap: "1rem" }}>
-            <Typography variant="h4">Take an app tour</Typography>
+            <Typography variant="h4">Start by reading the short tour</Typography>
             <Fab size="small" color="primary" aria-label="add">
-              <ArrowForwardIcon />
+              <ArrowDownwardIcon />
             </Fab>
           </Box>
           <Box
@@ -42,17 +44,18 @@ export const Home = () => {
               marginTop: "3rem",
               gap: "2rem",
               justifyContent: "center",
+             
             }}
           >
             <TutorialCard
-              imageSrc={"tutorial1.png"}
+              imageSrc={"tutorial1-3.png"}
               text={
-                "For Listen Up! to deliver the best experience,you will need to link to your spotify account."
+                "For Listen Up! to deliver the best experience,you will need to link your spotify account."
               }
               title={"Step 1"}
             />
             <TutorialCard
-              imageSrc={"tutorial2.png"}
+              imageSrc={"tutorial2-4.png"}
               text="In the DJ section, click the headphones circle to start recording your voice. 
               DJ can detect your voice emotion and it understands Artists names. After you click PREDICT MY EMOTION DJ will display the result.
               If you are not satisfied with the response you can try again any time."
@@ -67,8 +70,8 @@ export const Home = () => {
               title={"Step 3"}
             />
             <TutorialCard
-              imageSrc={"tutorial1.png"}
-              text={"hello"}
+              imageSrc={"tutorial4-1.png"}
+              text={"By now a generated music playlist should be displayed, you can add it to you Spotify palylists by simply clicking ADD TO SPOTIFY button."}
               title={"Step 4"}
             />
           </Box>

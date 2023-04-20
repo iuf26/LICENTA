@@ -19,12 +19,20 @@ import Typography from "@mui/material/Typography";
 export const TutorialCard = ({ imageSrc, text, title }) => {
   console.log({ imageSrc });
   return (
-    <Card sx={{ maxWidth: 290 }}>
-      <CardActionArea>
+    <CardActionArea sx={{'width':'20rem'}}>
+      <Card
+        sx={{
+          maxWidth: 278,
+          height: "35rem",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
         <CardMedia component="picture" height="1rem">
           <img src={require(`assets/images/${imageSrc}`)} alt="logo" />
         </CardMedia>
-        <CardContent>
+        <CardContent style={{}}>
           <Typography gutterBottom variant="h5" component="div">
             <strong>{title}</strong>
           </Typography>
@@ -32,7 +40,7 @@ export const TutorialCard = ({ imageSrc, text, title }) => {
             {text}
           </Typography>
         </CardContent>
-      </CardActionArea>
-    </Card>
+      </Card>
+    </CardActionArea>
   );
 };
