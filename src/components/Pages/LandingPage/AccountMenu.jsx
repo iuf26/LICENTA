@@ -23,6 +23,7 @@ import { colorSpotifyGreen } from "assets/styles/colors";
 import { requestLogout } from "helpers/account";
 import { mapResponse } from "helpers/mappings";
 import { requestSpotifyLogin } from "helpers/streaming";
+import Cookies from "js-cookie";
 import { useSnackbar } from "notistack";
 import { useAccount } from "redux/hooks/useAccount";
 import { selectUsername } from "redux/selectors/accountSelector";
@@ -37,6 +38,8 @@ export default function AccountMenu() {
   const onLogoutClick = () => {
     logout();
     requestLogout();
+    Cookies.remove("token");
+    Cookies.remove("authenticated");
   };
 
   const onAddSpotifyClick = () => {

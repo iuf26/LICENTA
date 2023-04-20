@@ -1,9 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
+import { mappingGeneratePlaylistRequest } from "helpers/mappings";
 import { requestSpotifyGeneratedPlaylist } from "helpers/streaming";
 import { selectUsername } from "redux/selectors/accountSelector";
-import { mappingGeneratePlaylistRequest } from "helpers/mappings";
 
 export function deleteAudio(audioKey, setRecordings) {
   setRecordings((prevState) =>
@@ -28,24 +28,10 @@ export function predictEmotion(
   })
     .then((response) => response.json())
     .then((response) => {
-      console.info("emotion was predicted");
-      const prediction = mappingGeneratePlaylistRequest(response,username)
-      setPrediction({...prediction});
-      setIsFinished(true);
-      setIsLoading(false);
-      // requestSpotifyGeneratedPlaylist(
-      //   username,
-      //   detectedEmotion,
-      //   loudness,
-      //   tempo
-      // ).then(response => {
-      //   console.log(response);
-      //   setIsFinished(true);
-      //   setIsLoading(false);
-      // })
-      // .catch(error => {
-      //   console.log(error);
-      // })
+      const prediction = mappingGeneratePlaylistRequest(response, username);
+      setPrediction({ ...prediction });
+      // setIsFinished(true);
+      // setIsLoading(false);
     })
     .catch((error) => console.error(error));
 }

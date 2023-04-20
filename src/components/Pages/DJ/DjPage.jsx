@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { CssBaseline } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import Fab from "@mui/material/Fab";
 import Grow from "@mui/material/Grow";
 import Paper from "@mui/material/Paper";
@@ -16,12 +17,19 @@ import { TopBar } from "components/Pages/LandingPage/TopBar";
 import { Recorder } from "components/RecordingFunctionality/components/Recorder";
 import useRecordingsList from "components/RecordingFunctionality/hooks/use-recordings-list";
 import useRecorder from "components/RecordingFunctionality/hooks/useRecorder";
+import {
+  mapSpeech2TextTranscription,
+  mapSpotifyRecommendationsTracks,
+} from "helpers/mappings";
 import { requestSpotifyGeneratedPlaylist } from "helpers/streaming";
+import { requestSpeechToTextTranscription } from "helpers/voiceCommands";
 import { useSnackbar } from "notistack";
 import { selectUsername } from "redux/selectors/accountSelector";
+import { PlaylistRecommendActions } from "redux/slices/playlistRecommendSlice";
 import { Button } from "semantic-ui-react";
 
 import { MenuDrawer } from "../LandingPage/MenuDrawer";
+import { TracksList } from "../Tracks/TracksList";
 import DjInfoDialog from "./DjInfoDialog";
 import { PredictEmotionFabButton } from "./PredictEmotionFabButton";
 import { PredictedEmotionDialog } from "./PredictedEmotionDialog";
@@ -31,49 +39,81 @@ const StyledDiv = styled("div")(({ theme }) => ({
   padding: theme.spacing(1),
 }));
 export const DjPage = () => {
-  const icon = (
-    <Fab size="large" variant="extended" sx={{ backgroundColor: "#1DB954" }}>
-      <AudiotrackIcon sx={{ mr: 1 }} />
-      Generate playlist
-    </Fab>
-  );
-  const emotionText = (
-    <Typography variant="h4">DJ predicted you are emotion</Typography>
-  );
+  const dispatch = useDispatch();
+  const username = useSelector(selectUsername);
   const [prediction, setPrediction] = useState();
   const [loading, setLoading] = useState(false);
   const [showPredictEmotionButton, setShowPredictEmotionButton] =
     useState(false);
   const [predictionFinished, setPredictionFinished] = useState(false);
+  const [generatePlaylistLoading, setGeneratePlaylistLoading] = useState(false);
+  const [playlistRetrieved, setPlaylistRetrieved] = useState(false);
   const { recorderState, addRecording, ...handlers } = useRecorder();
   const { audio } = recorderState;
   const { recordings, deleteAudio, predictEmotion } = useRecordingsList(audio);
-  const username = useSelector(selectUsername);
   const { enqueueSnackbar } = useSnackbar();
+  const [seedArtists, setSeedArtists] = useState();
+  const [transcription, setTranscription] = useState();
+
+  const voiceAnalyzed = () => {
+    setLoading(false);
+    setPredictionFinished(true);
+  };
+
+  const transcribeVoiceToText = useCallback(({ audio }) => {
+    console.log({ audio });
+    requestSpeechToTextTranscription({ recording: audio })
+      .then((resp) => mapSpeech2TextTranscription(resp))
+      .then((resp) => {
+        console.log({ resp });
+        setTranscription(resp);
+        voiceAnalyzed();
+      })
+      .catch((err) => {
+        console.log(err);
+        voiceAnalyzed();
+      });
+  }, []);
 
   const onPredict = useCallback(() => {
     predictEmotion(setPredictionFinished, setLoading, setPrediction, username);
+    transcribeVoiceToText({ audio });
   }, [
-    setPredictionFinished,
+    audio,
+    username,
     setLoading,
     setPrediction,
-    username,
     predictEmotion,
+    setPredictionFinished,
+    transcribeVoiceToText,
   ]);
 
   const onGeneratePlaylistClick = useCallback(() => {
-    console.log({ prediction });
-    requestSpotifyGeneratedPlaylist(prediction)
-      .then((resp) => console.log(resp))
+    setGeneratePlaylistLoading(true);
+    // setPlaylistRetrieved(false);
+    requestSpotifyGeneratedPlaylist(prediction, transcription)
+      .then((prediction) => mapSpotifyRecommendationsTracks(prediction))
+      .then(({ tracks, seedArtists }) => {
+        dispatch(PlaylistRecommendActions.setTracks(tracks));
+        setGeneratePlaylistLoading(false);
+        setPlaylistRetrieved(true);
+        setSeedArtists(seedArtists);
+      })
       .catch((error) => console.log(error));
-  }, [prediction]);
+  }, [prediction, dispatch, transcription]);
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        padding: 0,
+        margin: 0,
+      }}
+      flexDirection="column"
+    >
       <Box
         sx={{
           display: "flex",
-
           padding: 0,
           margin: 0,
         }}
@@ -100,8 +140,9 @@ export const DjPage = () => {
             predictionLoading={loading}
             setShowPredictEmotionButton={setShowPredictEmotionButton}
             setPredictionFinished={setPredictionFinished}
+            setPlaylistRetrieved={setPlaylistRetrieved}
           />
-          {showPredictEmotionButton && !predictionFinished && (
+          {showPredictEmotionButton && !predictionFinished && !loading && (
             <PredictEmotionFabButton onClick={onPredict} />
           )}
           {predictionFinished && prediction.detectedEmotion ? (
@@ -136,20 +177,59 @@ export const DjPage = () => {
                 style={{ transformOrigin: "2 2 2" }}
                 {...(true ? { timeout: 2000 } : {})}
               >
-                <Fab
-                  size="large"
-                  variant="extended"
-                  sx={{ backgroundColor: "#1DB954" }}
-                  onClick={onGeneratePlaylistClick}
-                >
-                  <AudiotrackIcon sx={{ mr: 1 }} />
-                  Generate playlist
-                </Fab>
+                {generatePlaylistLoading ? (
+                  <CircularProgress color="secondary" />
+                ) : (
+                  <Fab
+                    size="large"
+                    variant="extended"
+                    sx={{ backgroundColor: "#1DB954" }}
+                    onClick={onGeneratePlaylistClick}
+                  >
+                    <AudiotrackIcon sx={{ mr: 1 }} />
+                    Generate playlist
+                  </Fab>
+                )}
               </Grow>
+              <br></br>
+              {playlistRetrieved && !generatePlaylistLoading && (
+                <Grow
+                  in={true}
+                  style={{ transformOrigin: "2 2 2" }}
+                  {...(true ? { timeout: 1000 } : {})}
+                >
+                  {
+                    <Typography variant="h5">
+                      {seedArtists.length === 0 ? (
+                        <p>
+                          No artists were detected, but we picked your favourite
+                          ones
+                        </p>
+                      ) : (
+                        <>
+                          I created your playlist starting from detected artists{" "}
+                          <strong style={{ color: colorPurplePowder }}>
+                            {seedArtists}
+                          </strong>
+                        </>
+                      )}
+                    </Typography>
+                  }
+                </Grow>
+              )}
             </Box>
           ) : null}
         </Box>
+        {/* <Grow
+          in={false}
+          style={{ transformOrigin: "2 2 2" }}
+          {...(true ? { timeout: 1000 } : {})}
+        >
+          <TracksList />
+        </Grow> */}
+        {/* <TracksList /> */}
       </Box>
-    </>
+      {playlistRetrieved && <TracksList />}
+    </Box>
   );
 };

@@ -12,6 +12,7 @@ import { Recorder } from "components/RecordingFunctionality/components/Recorder"
 import { selectIsAuthenticated } from "redux/selectors/accountSelector";
 
 import { DjPage } from "./Pages/DJ/DjPage";
+import { TracksList } from "./Pages/Tracks/TracksList";
 
 const Routing = () => {
   const isAuth = useSelector(selectIsAuthenticated);
@@ -26,6 +27,11 @@ const Routing = () => {
           exact
           path="/account/reset/password/:email/:otp"
           element={<PasswordForm />}
+        />
+        <Route
+          exact
+          path="/tracks"
+          element={<TracksList />}
         />
 
         {/* Protected routes here */}
@@ -46,6 +52,7 @@ const Routing = () => {
           element={
             <ProtectedRoute isLoggedIn={isAuth}>
               <DjPage />
+              {/* <TracksList/> */}
             </ProtectedRoute>
           }
         />
