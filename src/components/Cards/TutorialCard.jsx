@@ -17,7 +17,6 @@ import Typography from "@mui/material/Typography";
 // });
 
 export const TutorialCard = ({ imageSrc, text, title }) => {
-  console.log({ imageSrc });
   return (
     <CardActionArea sx={{'width':'20rem'}}>
       <Card

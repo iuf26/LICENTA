@@ -25,6 +25,12 @@ import { requestSpotifyGeneratedPlaylist } from "helpers/streaming";
 import { requestSpeechToTextTranscription } from "helpers/voiceCommands";
 import { useSnackbar } from "notistack";
 import { selectUsername } from "redux/selectors/accountSelector";
+import {
+  selectDetectedArtists,
+  selectPredictedEmotion,
+} from "redux/selectors/dataForMusicRecommendationSelectors";
+import { selectRecommendedTracks } from "redux/selectors/recommendationSelector";
+import { DataForMusicRecommendationActions } from "redux/slices/dataForMusicRecommendation";
 import { PlaylistRecommendActions } from "redux/slices/playlistRecommendSlice";
 import { Button } from "semantic-ui-react";
 
@@ -54,6 +60,9 @@ export const DjPage = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [seedArtists, setSeedArtists] = useState();
   const [transcription, setTranscription] = useState();
+  const currentPredictedEmotion = useSelector(selectPredictedEmotion);
+  const currentTracks = useSelector(selectRecommendedTracks);
+  const currentDetectedArtists = useSelector(selectDetectedArtists);
 
   const voiceAnalyzed = () => {
     setLoading(false);
@@ -95,6 +104,9 @@ export const DjPage = () => {
       .then((prediction) => mapSpotifyRecommendationsTracks(prediction))
       .then(({ tracks, seedArtists }) => {
         dispatch(PlaylistRecommendActions.setTracks(tracks));
+        dispatch(
+          DataForMusicRecommendationActions.setDetectedArtists(seedArtists)
+        );
         setGeneratePlaylistLoading(false);
         setPlaylistRetrieved(true);
         setSeedArtists(seedArtists);
@@ -145,7 +157,8 @@ export const DjPage = () => {
           {showPredictEmotionButton && !predictionFinished && !loading && (
             <PredictEmotionFabButton onClick={onPredict} />
           )}
-          {predictionFinished && prediction.detectedEmotion ? (
+          {(predictionFinished && prediction?.detectedEmotion) ||
+          (currentPredictedEmotion && currentTracks?.length > 0) ? (
             <Box
               display="flex"
               justifyContent="center"
@@ -167,7 +180,7 @@ export const DjPage = () => {
                   <Typography variant="h4">
                     DJ predicted you are{" "}
                     <strong style={{ color: colorPurplePowder }}>
-                      {prediction.detectedEmotion}
+                      {prediction?.detectedEmotion || currentPredictedEmotion}
                     </strong>
                   </Typography>
                 }
@@ -192,7 +205,8 @@ export const DjPage = () => {
                 )}
               </Grow>
               <br></br>
-              {playlistRetrieved && !generatePlaylistLoading && (
+              {((playlistRetrieved && !generatePlaylistLoading) ||
+                currentDetectedArtists) && (
                 <Grow
                   in={true}
                   style={{ transformOrigin: "2 2 2" }}
@@ -200,7 +214,8 @@ export const DjPage = () => {
                 >
                   {
                     <Typography variant="h5">
-                      {seedArtists.length === 0 ? (
+                      {seedArtists?.length === 0 ||
+                      currentDetectedArtists.length <= 1 ? (
                         <p>
                           No artists were detected, but we picked your favourite
                           ones
@@ -229,7 +244,7 @@ export const DjPage = () => {
         </Grow> */}
         {/* <TracksList /> */}
       </Box>
-      {playlistRetrieved && <TracksList />}
+      {(playlistRetrieved || currentTracks?.length > 0) && <TracksList />}
     </Box>
   );
 };
