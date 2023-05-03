@@ -85,6 +85,9 @@ export const Recorder = ({
       <Typography variant="h4">
         Hi! I'm <strong style={{ color: colorPurplePowder }}>DJ!</strong>
       </Typography>
+      {/* <Typography variant="h4">
+       Tap the headphones button to start recording your voice
+      </Typography> */}
       <Fab
         aria-label="save"
         sx={buttonSx}

@@ -1,5 +1,6 @@
 import Tooltip from "@mui/material/Tooltip";
 import { colorBlackLighter, colorPurplePowder } from "assets/styles/colors";
+import { Player } from "components/RecordingFunctionality/components/Player";
 import { Duration } from "luxon";
 
 export const TrackItem = ({
@@ -8,6 +9,7 @@ export const TrackItem = ({
   durationMs,
   presentationImage,
   index = 0,
+  previewUrl
 }) => {
   return (
     <div
@@ -19,24 +21,32 @@ export const TrackItem = ({
       }}
     >
       <div style={{ display: "flex", width: "15rem", gap: "0.5rem" }}>
-        <p
-          style={{
-            display: "inline-block",
-            marginTop: "1rem",
-            marginRight: "11px",
-            width: "10px",
-            color: "#5F5B5B",
-          }}
-        >
-          <strong>{index}</strong>
-        </p>
+        <div>
+          <p
+            style={{
+              display: "inline-block",
+              marginTop: "1rem",
+              marginRight: "11px",
+              width: "10px",
+              color: "#5F5B5B",
+            }}
+            className="list-index"
+          >
+            <strong>{index}</strong>
+          </p>
+        </div>
+
         <img
           src={presentationImage.url}
           alt="First artist from album"
           width="50px"
           height="50px"
-          style={{ borderRadius: "5%", boxShadow: `0px 0px 5px 0px #1A1A1A` }}
+          style={{
+            borderRadius: "5%",
+            boxShadow: `0px 0px 5px 0px #1A1A1A`,
+          }}
         />
+        <div></div>
         <p
           style={{
             textOverflow: "ellipsis",
@@ -49,6 +59,9 @@ export const TrackItem = ({
             <strong>{title}</strong>
           </Tooltip>
         </p>
+        <div className="player-button">
+          <Player currentSrc={previewUrl} />
+        </div>
       </div>
       <div
         style={{

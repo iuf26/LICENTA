@@ -2,8 +2,6 @@ FROM node:alpine
 
 WORKDIR /app
 # set working directory
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /node_modules/.bin:$PATH
 
 # install app dependencies
 COPY package.json .

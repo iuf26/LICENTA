@@ -14,6 +14,7 @@ import { styled } from "@mui/material/styles";
 import { Box } from "@mui/system";
 import { colorPurple, colorPurplePowder } from "assets/styles/colors";
 import { TopBar } from "components/Pages/LandingPage/TopBar";
+import { Player } from "components/RecordingFunctionality/components/Player";
 import { Recorder } from "components/RecordingFunctionality/components/Recorder";
 import useRecordingsList from "components/RecordingFunctionality/hooks/use-recordings-list";
 import useRecorder from "components/RecordingFunctionality/hooks/useRecorder";
@@ -100,7 +101,9 @@ export const DjPage = () => {
   const onGeneratePlaylistClick = useCallback(() => {
     setGeneratePlaylistLoading(true);
     // setPlaylistRetrieved(false);
-    requestSpotifyGeneratedPlaylist(prediction, transcription)
+    let text = transcription?.text ? transcription?.text : "";
+    let words = transcription?.words ? transcription?.words : [];
+    requestSpotifyGeneratedPlaylist(prediction, text, words)
       .then((prediction) => mapSpotifyRecommendationsTracks(prediction))
       .then(({ tracks, seedArtists }) => {
         dispatch(PlaylistRecommendActions.setTracks(tracks));
@@ -215,10 +218,10 @@ export const DjPage = () => {
                   {
                     <Typography variant="h5">
                       {seedArtists?.length === 0 ||
-                      currentDetectedArtists.length <= 1 ? (
+                      currentDetectedArtists[0] === "" ? (
                         <p>
-                          No artists were detected, but we picked your favourite
-                          ones
+                          No artists were detected, but we picked randomly for
+                          you ones
                         </p>
                       ) : (
                         <>

@@ -62,7 +62,7 @@ export const mapSpotifyTrack = (track) => {
 export const mapSpeech2TextTranscription = (resp) => {
   console.log({ resp });
   return {
-    text: resp.data?.utterances[0]?.text,
-    words: resp.data?.utterances[0]?.words,
+    text: resp.data?.utterances ? resp.data?.utterances[0]?.text : "",
+    words: resp.data?.utterances? resp.data?.utterances[0]?.words : [],
   };
 };
