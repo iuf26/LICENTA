@@ -155,6 +155,7 @@ export const TracksList = () => {
               durationMs={track.durationMs}
               presentationImage={track.albumImages[2]}
               index={index + 1}
+              previewUrl={track.previewUrl}
             />
           ))}
         </div>

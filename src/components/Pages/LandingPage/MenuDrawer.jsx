@@ -1,4 +1,7 @@
 import * as React from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -11,17 +14,28 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useTheme } from "@mui/material/styles";
+import { colorPurple, colorPurpleElectric } from "assets/styles/colors";
 import { Drawer, DrawerHeader } from "assets/styles/styledComponents";
 import { drawerMenuOptions } from "helpers/menuDrawer";
-import { colorPurple, colorPurpleElectric } from "assets/styles/colors";
+import { selectRoute } from "redux/selectors/routeSelector";
+import { RouteActions } from "redux/slices/routeSlice";
 
 const drawerWidth = 210;
 
 export function MenuDrawer() {
   const theme = useTheme();
   const navigate = useNavigate();
+  const [section, setSection] = useState("Home");
+  const routeSelector = useSelector(selectRoute);
+  const dispatch = useDispatch();
 
   const onMenuOptionClicked = (destination) => {
+    console.log({ destination });
+    if (destination === "/home") {
+      dispatch(RouteActions.setRoute("/home"));
+    } else {
+      if (destination === "/dj") dispatch(RouteActions.setRoute("/dj"));
+    }
     navigate(destination);
   };
 
@@ -61,10 +75,10 @@ export function MenuDrawer() {
             disablePadding
             sx={{
               display: "block",
+
               "&:hover": {
-                background: "#3C3C3C"
+                background: "#3C3C3C",
               },
-             
             }}
             onClick={() => onMenuOptionClicked(route)}
           >
@@ -89,6 +103,22 @@ export function MenuDrawer() {
                 primary={text}
                 sx={{ opacity: 1, color: "white" }}
               />
+              {routeSelector.route
+                .replace(/^./, "")
+                .match(text.toLowerCase()) !== null && (
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: 3,
+                    flexDirection: "flex-end",
+                    color: "white",
+                    marginRight: "10px",
+                    marginLeft: 0,
+                  }}
+                >
+                  <ChevronLeftIcon />
+                </ListItemIcon>
+              )}
             </ListItemButton>
           </ListItem>
         ))}

@@ -15,6 +15,9 @@ import {
 } from "components/RecordingFunctionality/utils/format-time";
 import { useSnackbar } from "notistack";
 import "semantic-ui-css/semantic.min.css";
+import { useDispatch } from "react-redux";
+import { PlaylistRecommendActions } from "redux/slices/playlistRecommendSlice";
+import { DataForMusicRecommendationActions } from "redux/slices/dataForMusicRecommendation";
 
 export const Recorder = ({
   handlers,
@@ -29,6 +32,7 @@ export const Recorder = ({
   const { recordingMinutes, recordingSeconds } = recorderState;
   const { startRecording, saveRecording } = handlers;
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
 
   const buttonSx = {
     bgcolor: "linear-gradient(to right, #41295a, #2f0743);",
@@ -37,8 +41,13 @@ export const Recorder = ({
     boxShadow: `0px 0px 5px 0px #3A373B`,
   };
   const handleListenButtonClick = useCallback(() => {
+    
     setPulse((prev) => !prev);
     if (recordingState === "stop") {
+      console.log("hhh");
+      dispatch(PlaylistRecommendActions.setTracks(null))
+      dispatch(DataForMusicRecommendationActions.setPredictedEmotion(null));
+      dispatch(DataForMusicRecommendationActions.setDetectedArtists(null));
       startRecording();
       setPlaylistRetrieved(false);
       setPredictionFinished(false);
@@ -76,6 +85,9 @@ export const Recorder = ({
       <Typography variant="h4">
         Hi! I'm <strong style={{ color: colorPurplePowder }}>DJ!</strong>
       </Typography>
+      {/* <Typography variant="h4">
+       Tap the headphones button to start recording your voice
+      </Typography> */}
       <Fab
         aria-label="save"
         sx={buttonSx}

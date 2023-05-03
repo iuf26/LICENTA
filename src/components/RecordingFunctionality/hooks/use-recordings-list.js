@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 import generateKey from "components/RecordingFunctionality/utils/generate-key";
 
@@ -6,6 +7,7 @@ import { deleteAudio, predictEmotion } from "../handlers/recordings-list";
 
 export default function useRecordingsList(audio) {
   const [recordings, setRecordings] = useState();
+  const dispatcher = useDispatch();
 
   useEffect(() => {
     if (audio) {
@@ -25,7 +27,8 @@ export default function useRecordingsList(audio) {
         setIsFinished,
         setIsLoading,
         setPrediction,
-        username
+        username,
+        dispatcher
       );
     },
   };

@@ -39,3 +39,41 @@
                 opacity: 0;
         }
  }
+
+ .name-player-container{
+        display: flex;
+        flex-direction: row;
+ }
+
+ .list-index{
+    z-index: 2 !important;
+ }
+
+.div-with-player{
+
+}
+
+
+.div-with-player:hover + .player-button{
+        display:block !important;
+ }
+
+ .player-button{
+    z-index: 3 !important;
+    margin-top: 0.7rem;
+    margin-left: 3rem;
+
+    position: absolute;
+    color: black;
+ }
+
+ .song-title{
+        text-overflow: "ellipsis"  !important;
+        overflow: "hidden" !important;
+        white-space: "nowrap" !important;
+        color: "#6F6F6F" !important;
+ }
+
+ 
+
+ 

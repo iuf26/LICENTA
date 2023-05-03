@@ -18,7 +18,7 @@ export const requestSpotifyGeneratedPlaylist = ({
   detectedEmotion,
   loudness,
   tempo,
-},{text,words}) => {
+},text,words) => {
   const body = {
     detectedEmotion,
     loudness,
