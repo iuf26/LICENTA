@@ -44,6 +44,13 @@ export const mapSpotifyRecommendationsTracks = (resp) => {
   };
 };
 
+export const mapSpotifyKidsRecommendationsTracks = (resp) => {
+  const recommendedTracks = resp.data.body.recommendation.body.tracks;
+  return {
+    tracks: recommendedTracks,
+  };
+};
+
 export const mapSpotifyTrack = (track) => {
   return {
     durationMs: track.duration_ms,
@@ -63,6 +70,6 @@ export const mapSpeech2TextTranscription = (resp) => {
   console.log({ resp });
   return {
     text: resp.data?.utterances ? resp.data?.utterances[0]?.text : "",
-    words: resp.data?.utterances? resp.data?.utterances[0]?.words : [],
+    words: resp.data?.utterances ? resp.data?.utterances[0]?.words : [],
   };
 };
