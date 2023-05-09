@@ -13,6 +13,7 @@ import { selectIsAuthenticated } from "redux/selectors/accountSelector";
 
 import { DjPage } from "./Pages/DJ/DjPage";
 import { TracksList } from "./Pages/Tracks/TracksList";
+import { KidsDjPage } from "./Pages/DJ/KidsDjPage";
 
 const Routing = () => {
   const isAuth = useSelector(selectIsAuthenticated);
@@ -52,6 +53,17 @@ const Routing = () => {
           element={
             <ProtectedRoute isLoggedIn={isAuth}>
               <DjPage />
+              {/* <TracksList/> */}
+            </ProtectedRoute>
+          }
+        />
+
+      <Route
+          exact
+          path="/kids-dj"
+          element={
+            <ProtectedRoute isLoggedIn={isAuth}>
+              <KidsDjPage />
               {/* <TracksList/> */}
             </ProtectedRoute>
           }

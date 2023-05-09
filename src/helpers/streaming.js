@@ -31,10 +31,10 @@ export const requestSpotifyGeneratedPlaylist = (
   });
 };
 
-export const requestSpotifyKidsGeneratedPlaylist = (
-  {username,
-  detectedEmotion}
-) => {
+export const requestSpotifyKidsGeneratedPlaylist = ({
+  username,
+  detectedEmotion,
+}) => {
   const body = {
     detectedEmotion,
   };
@@ -101,4 +101,30 @@ export const addPlaylistToSpotifyAccount = async ({
     console.error(error);
     return false;
   }
+};
+
+//Returns a random integer in [0, max)
+export const  getRandomInt = (max) => {
+  return Math.floor(Math.random() * max);
+}
+
+export const kidsModeRandomPhrases = () => {
+  const motivationalPhrases = [
+    "If you can dream it, you can do it!",
+
+    "A person's a person, no matter how small!",
+
+    "No one is perfect - that's why pencils have erasers",
+
+    "Even miracles take a little time",
+
+    "Just keep swimming!",
+
+    "A true friend is the greatest of all blessings",
+
+    "Be kind whenever possible. It is always possible",
+  ];
+  const randomNumber = getRandomInt(motivationalPhrases.length);
+  return motivationalPhrases[randomNumber];
+
 };

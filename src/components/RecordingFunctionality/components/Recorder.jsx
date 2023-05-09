@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import HeadsetIcon from "@mui/icons-material/Headset";
 import { Box } from "@mui/material";
@@ -14,10 +15,9 @@ import {
   formatSeconds,
 } from "components/RecordingFunctionality/utils/format-time";
 import { useSnackbar } from "notistack";
-import "semantic-ui-css/semantic.min.css";
-import { useDispatch } from "react-redux";
-import { PlaylistRecommendActions } from "redux/slices/playlistRecommendSlice";
 import { DataForMusicRecommendationActions } from "redux/slices/dataForMusicRecommendation";
+import { PlaylistRecommendActions } from "redux/slices/playlistRecommendSlice";
+import "semantic-ui-css/semantic.min.css";
 
 export const Recorder = ({
   handlers,
@@ -26,6 +26,7 @@ export const Recorder = ({
   setShowPredictEmotionButton,
   setPredictionFinished,
   setPlaylistRetrieved,
+  mode,
 }) => {
   const [pulse, setPulse] = useState(false);
   const [recordingState, setRecordingState] = useState("stop");
@@ -41,11 +42,10 @@ export const Recorder = ({
     boxShadow: `0px 0px 5px 0px #3A373B`,
   };
   const handleListenButtonClick = useCallback(() => {
-    
     setPulse((prev) => !prev);
     if (recordingState === "stop") {
       console.log("hhh");
-      dispatch(PlaylistRecommendActions.setTracks(null))
+      dispatch(PlaylistRecommendActions.setTracks(null));
       dispatch(DataForMusicRecommendationActions.setPredictedEmotion(null));
       dispatch(DataForMusicRecommendationActions.setDetectedArtists(null));
       startRecording();
@@ -59,14 +59,14 @@ export const Recorder = ({
     }
     setRecordingState((prev) => (prev === "start" ? "stop" : "start"));
   }, [
-    setPulse,
-    startRecording,
     recordingState,
-    saveRecording,
-    enqueueSnackbar,
-    setShowPredictEmotionButton,
-    setPredictionFinished,
+    dispatch,
+    startRecording,
     setPlaylistRetrieved,
+    setPredictionFinished,
+    setShowPredictEmotionButton,
+    enqueueSnackbar,
+    saveRecording,
   ]);
 
   return (
@@ -82,9 +82,16 @@ export const Recorder = ({
       marginTop="10rem"
       padding={0}
     >
-      <Typography variant="h4">
-        Hi! I'm <strong style={{ color: colorPurplePowder }}>DJ!</strong>
-      </Typography>
+      {mode === "kid" ? (
+        <Typography variant="h4">
+          Hi kiddo! I'm{" "}
+          <strong style={{ color: colorPurplePowder }}>DJ!</strong>
+        </Typography>
+      ) : (
+        <Typography variant="h4">
+          Hi! I'm <strong style={{ color: colorPurplePowder }}>DJ!</strong>
+        </Typography>
+      )}
       {/* <Typography variant="h4">
        Tap the headphones button to start recording your voice
       </Typography> */}
