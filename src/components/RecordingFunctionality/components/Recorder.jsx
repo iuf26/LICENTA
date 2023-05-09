@@ -137,7 +137,19 @@ export const Recorder = ({
           </strong>
         </Typography>
       )}
-      {predictionLoading && (
+      {mode === KID_MODE  && predictionLoading &&(
+        <CircularProgress
+          size={168}
+          sx={{
+            color: colorPurplePowder, //#E09AF1
+            position: "absolute",
+            top: "18.6rem",
+            marginTop: 0,
+            marginLeft: "0",
+          }}
+        />
+      )}
+      {mode !== KID_MODE && predictionLoading && (
         <CircularProgress
           size={168}
           sx={{

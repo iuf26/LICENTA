@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
@@ -14,12 +14,16 @@ import { Recorder } from "components/RecordingFunctionality/components/Recorder"
 import useRecordingsList from "components/RecordingFunctionality/hooks/use-recordings-list";
 import useRecorder from "components/RecordingFunctionality/hooks/useRecorder";
 import {
-    KID_MODE,
+  KID_MODE,
   mapSpeech2TextTranscription,
   mapSpotifyKidsRecommendationsTracks,
   mapSpotifyRecommendationsTracks,
 } from "helpers/mappings";
-import { kidsModeRandomPhrases, requestSpotifyGeneratedPlaylist, requestSpotifyKidsGeneratedPlaylist } from "helpers/streaming";
+import {
+  kidsModeRandomPhrases,
+  requestSpotifyGeneratedPlaylist,
+  requestSpotifyKidsGeneratedPlaylist,
+} from "helpers/streaming";
 import { requestSpeechToTextTranscription } from "helpers/voiceCommands";
 import { useSnackbar } from "notistack";
 import { selectUsername } from "redux/selectors/accountSelector";
@@ -27,12 +31,16 @@ import {
   selectDetectedArtists,
   selectPredictedEmotion,
 } from "redux/selectors/dataForMusicRecommendationSelectors";
-import { selectRecommendedTracks } from "redux/selectors/recommendationSelector";
+import {
+  selectRecommendedKidsTracks,
+  selectRecommendedTracks,
+} from "redux/selectors/recommendationSelector";
 import { DataForMusicRecommendationActions } from "redux/slices/dataForMusicRecommendation";
 import { PlaylistRecommendActions } from "redux/slices/playlistRecommendSlice";
 
 import { MenuDrawer } from "../LandingPage/MenuDrawer";
 import { TracksList } from "../Tracks/TracksList";
+import { TracksListKids } from "../Tracks/TracksListKids";
 import { PredictEmotionFabButton } from "./PredictEmotionFabButton";
 
 export const KidsDjPage = () => {
@@ -47,15 +55,23 @@ export const KidsDjPage = () => {
   const [playlistRetrieved, setPlaylistRetrieved] = useState(false);
   const { recorderState, addRecording, ...handlers } = useRecorder();
   const { audio } = recorderState;
-  const {  predictEmotion } = useRecordingsList(audio);
+  const { predictEmotion } = useRecordingsList(audio);
   const { enqueueSnackbar } = useSnackbar();
   const [seedArtists, setSeedArtists] = useState();
   const currentPredictedEmotion = useSelector(selectPredictedEmotion);
-  const currentTracks = useSelector(selectRecommendedTracks);
+  const currentTracks = useSelector(selectRecommendedKidsTracks);
   const currentDetectedArtists = useSelector(selectDetectedArtists);
+
+  useEffect(() => {
+    if (prediction?.detectedEmotion) {
+      setPredictionFinished(true);
+      setLoading(false);
+    }
+  }, [prediction]);
 
   const onPredict = useCallback(() => {
     predictEmotion(setPredictionFinished, setLoading, setPrediction, username);
+    //setLoading(false)
   }, [
     username,
     setLoading,
@@ -67,18 +83,19 @@ export const KidsDjPage = () => {
   const onGeneratePlaylistClick = useCallback(() => {
     setGeneratePlaylistLoading(true);
     // setPlaylistRetrieved(false);
-   
+    console.log({prediction});
     requestSpotifyKidsGeneratedPlaylist(prediction)
       .then((resp) => mapSpotifyKidsRecommendationsTracks(resp))
       .then(({ tracks }) => {
         //STORE FOR KIDS RECOMMENDATIONS
+        dispatch(PlaylistRecommendActions.setKidsTracks(tracks));
         setGeneratePlaylistLoading(false);
         setPlaylistRetrieved(true);
         setLoading(false);
         setPredictionFinished(true);
       })
       .catch((error) => console.log(error));
-  }, [prediction]);
+  }, [prediction, dispatch]);
 
   return (
     <Box
@@ -172,7 +189,7 @@ export const KidsDjPage = () => {
                 )}
               </Grow>
               <br></br>
-              {(playlistRetrieved && !generatePlaylistLoading) && (
+              {playlistRetrieved && !generatePlaylistLoading && (
                 <Grow
                   in={true}
                   style={{ transformOrigin: "2 2 2" }}
@@ -180,20 +197,7 @@ export const KidsDjPage = () => {
                 >
                   {
                     <Typography variant="h5">
-                      {seedArtists?.length === 0 ||
-                      currentDetectedArtists[0] === "" ? (
-                        <p>
-                          No artists were detected, but we picked randomly for
-                          you ones
-                        </p>
-                      ) : (
-                        <>
-                          I created your playlist starting from detected artists{" "}
-                          <strong style={{ color: colorPurplePowder }}>
-                            {seedArtists}
-                          </strong>
-                        </>
-                      )}
+                      I created your playlist starting from detected artists{" "}
                     </Typography>
                   }
                 </Grow>
@@ -202,7 +206,7 @@ export const KidsDjPage = () => {
           ) : null}
         </Box>
       </Box>
-      {(playlistRetrieved || currentTracks?.length > 0) && <TracksList />}
+      {(playlistRetrieved || currentTracks?.length > 0) && <TracksListKids />}
     </Box>
   );
 };

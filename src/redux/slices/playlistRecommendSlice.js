@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 
 export const playlistRecommendationInitState = {
   tracks: [],
+  kidsTracks: []
 };
 
 export const PlaylistRecommendSlice = createSlice({
@@ -27,6 +28,23 @@ export const PlaylistRecommendSlice = createSlice({
         };
       }
     },
+    setKidsTracks: (_state, action) => {
+      if (action.payload) {
+        const generatedTracks = action.payload.map((elem) =>
+          mapSpotifyTrack(elem)
+        );
+        Cookies.set("kidsTracks", JSON.stringify(generatedTracks));
+        return {
+          ..._state,
+          kidsTracks: [...generatedTracks],
+        };
+      }else{
+        return {
+          ..._state,
+          kidsTracks: undefined,
+        };
+      }
+    }
   },
 });
 
