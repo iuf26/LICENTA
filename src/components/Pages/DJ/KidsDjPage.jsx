@@ -14,11 +14,12 @@ import { Recorder } from "components/RecordingFunctionality/components/Recorder"
 import useRecordingsList from "components/RecordingFunctionality/hooks/use-recordings-list";
 import useRecorder from "components/RecordingFunctionality/hooks/useRecorder";
 import {
+    KID_MODE,
   mapSpeech2TextTranscription,
   mapSpotifyKidsRecommendationsTracks,
   mapSpotifyRecommendationsTracks,
 } from "helpers/mappings";
-import { requestSpotifyGeneratedPlaylist, requestSpotifyKidsGeneratedPlaylist } from "helpers/streaming";
+import { kidsModeRandomPhrases, requestSpotifyGeneratedPlaylist, requestSpotifyKidsGeneratedPlaylist } from "helpers/streaming";
 import { requestSpeechToTextTranscription } from "helpers/voiceCommands";
 import { useSnackbar } from "notistack";
 import { selectUsername } from "redux/selectors/accountSelector";
@@ -118,6 +119,7 @@ export const KidsDjPage = () => {
             setShowPredictEmotionButton={setShowPredictEmotionButton}
             setPredictionFinished={setPredictionFinished}
             setPlaylistRetrieved={setPlaylistRetrieved}
+            mode={KID_MODE}
           />
           {showPredictEmotionButton && !predictionFinished && !loading && (
             <PredictEmotionFabButton onClick={onPredict} />

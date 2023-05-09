@@ -1,3 +1,6 @@
+export const KID_MODE = "kids";
+export const ADULT_MODE = "adult";
+
 export const mappingGeneratePlaylistRequest = (response, username) => {
   return {
     detectedEmotion: response.predictedEmotion,
