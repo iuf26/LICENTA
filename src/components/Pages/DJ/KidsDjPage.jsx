@@ -56,11 +56,8 @@ export const KidsDjPage = () => {
   const { recorderState, addRecording, ...handlers } = useRecorder();
   const { audio } = recorderState;
   const { predictEmotion } = useRecordingsList(audio);
-  const { enqueueSnackbar } = useSnackbar();
-  const [seedArtists, setSeedArtists] = useState();
   const currentPredictedEmotion = useSelector(selectPredictedEmotion);
   const currentTracks = useSelector(selectRecommendedKidsTracks);
-  const currentDetectedArtists = useSelector(selectDetectedArtists);
 
   useEffect(() => {
     if (prediction?.detectedEmotion) {

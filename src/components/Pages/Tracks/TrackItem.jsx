@@ -9,7 +9,7 @@ export const TrackItem = ({
   durationMs,
   presentationImage,
   index = 0,
-  previewUrl
+  previewUrl,
 }) => {
   return (
     <div
@@ -59,9 +59,11 @@ export const TrackItem = ({
             <strong>{title}</strong>
           </Tooltip>
         </p>
-        <div className="player-button">
-          <Player currentSrc={previewUrl} />
-        </div>
+        {previewUrl && (
+          <div className="player-button">
+            <Player currentSrc={previewUrl} />
+          </div>
+        )}
       </div>
       <div
         style={{
