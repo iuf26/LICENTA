@@ -3,8 +3,6 @@ import AudioPlayer from "react-h5-audio-player";
 
 import { PlayArrow } from "@mui/icons-material";
 import PauseIcon from "@mui/icons-material/Pause";
-import { Fab } from "@mui/material";
-import { Button } from "semantic-ui-react";
 
 export const Player = ({ currentSrc }) => {
   const [playing, setPlaying] = useState(false);
@@ -15,17 +13,22 @@ export const Player = ({ currentSrc }) => {
       setPlaying(false);
       return;
     }
-    player.current.audio.current.play();
+    player.current.audio.current
+      .play()
+      .then(() => console.log("Then clause play promise"))
+      .catch(() => console.log("Playing interrupted"));
     setPlaying(true);
   };
-  const stopPlay = () => {};
   return (
     <>
       <AudioPlayer
         autoPlay={false}
         src={currentSrc}
         onPlay={(e) => console.log({ playing: currentSrc })}
-        onEnded={(e) => {console.log("ended");setPlaying(false)}}
+        onEnded={(e) => {
+          console.log("ended");
+          setPlaying(false);
+        }}
         ref={player}
         style={{ display: "none" }}
       />

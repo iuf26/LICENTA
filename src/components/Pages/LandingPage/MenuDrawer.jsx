@@ -16,7 +16,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { useTheme } from "@mui/material/styles";
 import { colorPurple, colorPurpleElectric } from "assets/styles/colors";
 import { Drawer, DrawerHeader } from "assets/styles/styledComponents";
-import { drawerMenuOptions } from "helpers/menuDrawer";
+import { drawerMenuOptions, routeMatchesText } from "helpers/menuDrawer";
 import { selectRoute } from "redux/selectors/routeSelector";
 import { RouteActions } from "redux/slices/routeSlice";
 
@@ -30,12 +30,21 @@ export function MenuDrawer() {
   const dispatch = useDispatch();
 
   const onMenuOptionClicked = (destination) => {
-    console.log({ destination });
-    if (destination === "/home") {
-      dispatch(RouteActions.setRoute("/home"));
-    } else {
-      if (destination === "/dj") dispatch(RouteActions.setRoute("/dj"));
+    console.log({destination});
+    switch (destination) {
+      case "/home":
+        dispatch(RouteActions.setRoute("/home"));
+        break;
+      case "/dj":
+        dispatch(RouteActions.setRoute("/dj"));
+        break;
+      case "/kids-dj":
+        dispatch(RouteActions.setRoute("/kids-dj"));
+        break;
+      default:
+        break;
     }
+
     navigate(destination);
   };
 
@@ -103,9 +112,8 @@ export function MenuDrawer() {
                 primary={text}
                 sx={{ opacity: 1, color: "white" }}
               />
-              {routeSelector.route
-                .replace(/^./, "")
-                .match(text.toLowerCase()) !== null && (
+              {
+               routeMatchesText(text,routeSelector.route) && (
                 <ListItemIcon
                   sx={{
                     minWidth: 0,

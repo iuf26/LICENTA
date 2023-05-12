@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
 
 import HeadsetIcon from "@mui/icons-material/Headset";
+import InsertEmoticonIcon from "@mui/icons-material/InsertEmoticon";
 import { Box } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import Fab from "@mui/material/Fab";
@@ -13,11 +15,12 @@ import {
   formatMinutes,
   formatSeconds,
 } from "components/RecordingFunctionality/utils/format-time";
+import { KID_MODE } from "helpers/mappings";
+import { kidsModeRandomPhrases } from "helpers/streaming";
 import { useSnackbar } from "notistack";
-import "semantic-ui-css/semantic.min.css";
-import { useDispatch } from "react-redux";
-import { PlaylistRecommendActions } from "redux/slices/playlistRecommendSlice";
 import { DataForMusicRecommendationActions } from "redux/slices/dataForMusicRecommendation";
+import { PlaylistRecommendActions } from "redux/slices/playlistRecommendSlice";
+import "semantic-ui-css/semantic.min.css";
 
 export const Recorder = ({
   handlers,
@@ -26,9 +29,12 @@ export const Recorder = ({
   setShowPredictEmotionButton,
   setPredictionFinished,
   setPlaylistRetrieved,
+  mode,
+  phraseForKids
 }) => {
   const [pulse, setPulse] = useState(false);
   const [recordingState, setRecordingState] = useState("stop");
+  const [kidsPhrase,setKidsPhrase] = useState(() => kidsModeRandomPhrases())
   const { recordingMinutes, recordingSeconds } = recorderState;
   const { startRecording, saveRecording } = handlers;
   const { enqueueSnackbar } = useSnackbar();
@@ -41,16 +47,19 @@ export const Recorder = ({
     boxShadow: `0px 0px 5px 0px #3A373B`,
   };
   const handleListenButtonClick = useCallback(() => {
-    
+    if (mode === KID_MODE) {
+      console.log("kiddo");
+    }
     setPulse((prev) => !prev);
     if (recordingState === "stop") {
-      console.log("hhh");
-      dispatch(PlaylistRecommendActions.setTracks(null))
+      dispatch(PlaylistRecommendActions.setTracks(null));
       dispatch(DataForMusicRecommendationActions.setPredictedEmotion(null));
       dispatch(DataForMusicRecommendationActions.setDetectedArtists(null));
+      const newKidsPhrase = kidsModeRandomPhrases();
       startRecording();
       setPlaylistRetrieved(false);
       setPredictionFinished(false);
+      setKidsPhrase(newKidsPhrase);
       setShowPredictEmotionButton(false);
     } else {
       enqueueSnackbar("Your recording was saved", { variant: "info" });
@@ -59,14 +68,15 @@ export const Recorder = ({
     }
     setRecordingState((prev) => (prev === "start" ? "stop" : "start"));
   }, [
-    setPulse,
-    startRecording,
     recordingState,
-    saveRecording,
-    enqueueSnackbar,
-    setShowPredictEmotionButton,
-    setPredictionFinished,
+    dispatch,
+    startRecording,
     setPlaylistRetrieved,
+    setPredictionFinished,
+    setShowPredictEmotionButton,
+    enqueueSnackbar,
+    saveRecording,
+    mode,
   ]);
 
   return (
@@ -82,23 +92,64 @@ export const Recorder = ({
       marginTop="10rem"
       padding={0}
     >
-      <Typography variant="h4">
-        Hi! I'm <strong style={{ color: colorPurplePowder }}>DJ!</strong>
-      </Typography>
+      {mode === KID_MODE ? (
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          flexDirection="column"
+        >
+          <Typography variant="h4">
+            Hi kiddo! I'm{" "}
+            <strong style={{ color: colorPurplePowder }}>DJ!</strong>
+          </Typography>
+          <Typography variant="h5">
+            Press me and start reading the pink phrase out loud
+          </Typography>
+        </Box>
+      ) : (
+        <Typography variant="h4">
+          Hi! I'm <strong style={{ color: colorPurplePowder }}>DJ!</strong>
+        </Typography>
+      )}
       {/* <Typography variant="h4">
        Tap the headphones button to start recording your voice
       </Typography> */}
-      <Fab
-        aria-label="save"
-        sx={buttonSx}
-        onClick={handleListenButtonClick}
-        size="large"
-        color="secondary"
-        className={pulse ? "pulse" : ""}
-      >
-        {<HeadsetIcon sx={{ fontSize: "80px" }} />}
-      </Fab>
-      {predictionLoading && (
+      <div>
+        <Fab
+          sx={buttonSx}
+          onClick={handleListenButtonClick}
+          size="large"
+          color="secondary"
+          className={pulse ? "pulse" : ""}
+        >
+          {mode === KID_MODE ? (
+            <InsertEmoticonIcon sx={{ fontSize: "80px" }} />
+          ) : (
+            <HeadsetIcon sx={{ fontSize: "80px" }} />
+          )}
+        </Fab>
+      </div>
+      {mode === KID_MODE && recordingState === "start" && (
+        <Typography variant="h5">
+          <strong style={{ color: colorPurplePowder }}>
+            {kidsPhrase}
+          </strong>
+        </Typography>
+      )}
+      {mode === KID_MODE  && predictionLoading &&(
+        <CircularProgress
+          size={168}
+          sx={{
+            color: colorPurplePowder, //#E09AF1
+            position: "absolute",
+            top: "18.6rem",
+            marginTop: 0,
+            marginLeft: "0",
+          }}
+        />
+      )}
+      {mode !== KID_MODE && predictionLoading && (
         <CircularProgress
           size={168}
           sx={{
