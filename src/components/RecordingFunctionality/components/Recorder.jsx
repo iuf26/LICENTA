@@ -30,13 +30,15 @@ export const Recorder = ({
   setPredictionFinished,
   setPlaylistRetrieved,
   mode,
-  phraseForKids
+  phraseForKids,
 }) => {
   const [pulse, setPulse] = useState(false);
   const [recordingState, setRecordingState] = useState("stop");
-  const [kidsPhrase,setKidsPhrase] = useState(() => kidsModeRandomPhrases())
+  const [kidsPhrase, setKidsPhrase] = useState(() => kidsModeRandomPhrases());
   const { recordingMinutes, recordingSeconds } = recorderState;
   const { startRecording, saveRecording } = handlers;
+  const [showInstructionsForKidsMode, setShowInstructionsForKidsMode] =
+    useState(true);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
 
@@ -48,6 +50,9 @@ export const Recorder = ({
   };
   const handleListenButtonClick = useCallback(() => {
     if (mode === KID_MODE) {
+      setShowInstructionsForKidsMode(
+        (showInstructionsForKidsMode) => !showInstructionsForKidsMode
+      );
       console.log("kiddo");
     }
     setPulse((prev) => !prev);
@@ -103,9 +108,11 @@ export const Recorder = ({
             Hi kiddo! I'm{" "}
             <strong style={{ color: colorPurplePowder }}>DJ!</strong>
           </Typography>
-          <Typography variant="h5">
-            Press me and start reading the pink phrase out loud
-          </Typography>
+          {showInstructionsForKidsMode && (
+            <Typography variant="h5">
+              Press me and start reading the pink phrase out loud
+            </Typography>
+          )}
         </Box>
       ) : (
         <Typography variant="h4">
@@ -132,12 +139,10 @@ export const Recorder = ({
       </div>
       {mode === KID_MODE && recordingState === "start" && (
         <Typography variant="h5">
-          <strong style={{ color: colorPurplePowder }}>
-            {kidsPhrase}
-          </strong>
+          <strong style={{ color: colorPurplePowder }}>{kidsPhrase}</strong>
         </Typography>
       )}
-      {mode === KID_MODE  && predictionLoading &&(
+      {mode === KID_MODE && predictionLoading && (
         <CircularProgress
           size={168}
           sx={{
